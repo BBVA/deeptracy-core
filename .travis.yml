@@ -1,14 +1,11 @@
 language: python
 
-services: docker
-
 python:
   - "3.6"
 
 deploy:
-
     # Deploy to PyPI
-  - provider: script
+    provider: script
     script: deploy/pypi.sh
     on:
       branch: master
