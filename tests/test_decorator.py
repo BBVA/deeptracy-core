@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from deeptracy_core import decorator
+
+from tests.unit.base_test import BaseDeeptracyTest
+from deeptracy_core.dal.database import db, Base
 
 
-def test_decorator():
-    assert decorator is not None
+class TestUtilsValidRepo(BaseDeeptracyTest):
+
+    def test_init_engine_creates_project_table(self):
+        db.init_engine()
+        print(Base.metadata.tables.keys())
