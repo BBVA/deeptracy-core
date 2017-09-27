@@ -7,6 +7,8 @@ Core package for deeptracy
     :alt: Deeptracy logo
     :width: 250 px
 
+.. image:: https://travis-ci.org/BBVA/deeptracy-core.svg?branch=master
+    :target: https://travis-ci.org/BBVA/deeptracy-core
 
 +----------------+----------------------------------------------+
 |Project site    | https://github.com/bbva/deeptracy            |
