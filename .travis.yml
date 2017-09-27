@@ -3,9 +3,14 @@ language: python
 python:
   - "3.6"
 
+install: pip install tox
+
+script:
+  - tox
+
 deploy:
     # Deploy to PyPI
-    provider: script
+  - provider: script
     script: deploy/pypi.sh
     on:
       branch: master
