@@ -7,7 +7,7 @@ from sqlalchemy_utils import database_exists, create_database
 from contextlib import contextmanager
 
 from sqlalchemy.ext.declarative import declarative_base
-from deeptracy.config import DATABASE_URI
+from deeptracy_core.config import DATABASE_URI
 
 
 class DeeptracyDBEngine:

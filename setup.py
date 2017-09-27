@@ -10,9 +10,12 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     readme = f.read()
 
-requirements = [str(ir.req) for ir in parse_requirements('requirements.txt', session=PipSession())]
+requirements = [str(ir.req) for ir in parse_requirements(
+    'requirements.txt',
+    session=PipSession())]
 
-test_requirements = [str(ir.req) for ir in parse_requirements('requirements_test.txt', session=PipSession())]
+test_requirements = [str(ir.req) for ir in parse_requirements(
+    'requirements_test.txt', session=PipSession())]
 
 
 setup(

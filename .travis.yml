@@ -1,5 +1,7 @@
 language: python
 
+services: docker
+
 python:
   - "3.6"
 
@@ -9,6 +11,7 @@ script:
   - tox
 
 deploy:
+
     # Deploy to PyPI
   - provider: script
     script: deploy/pypi.sh

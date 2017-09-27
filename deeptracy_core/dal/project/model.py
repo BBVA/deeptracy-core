@@ -3,7 +3,7 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-from deeptracy.utils import make_uuid
+from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
 
 
