@@ -1,14 +1,14 @@
 Deeptracy Core
 ==============
 
+.. image:: https://travis-ci.org/BBVA/deeptracy-core.svg?branch=master
+    :target: https://travis-ci.org/BBVA/deeptracy-core
+
 Core package for deeptracy
 
 .. image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
     :alt: Deeptracy logo
     :width: 250 px
-
-.. image:: https://travis-ci.org/BBVA/deeptracy-core.svg?branch=master
-    :target: https://travis-ci.org/BBVA/deeptracy-core
 
 +----------------+----------------------------------------------+
 |Project site    | https://github.com/bbva/deeptracy            |
