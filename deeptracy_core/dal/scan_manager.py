@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from enum import Enum
 from sqlalchemy.orm import Session
-from deeptracy.dal.models import Scan
+from deeptracy_core.dal.models import Scan
 
 
 class ScanState(Enum):

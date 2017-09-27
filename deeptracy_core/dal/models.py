@@ -4,10 +4,10 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from deeptracy.utils import make_uuid
-from deeptracy.dal.database import Base
+from deeptracy_core.dal.database import Base
 
-from deeptracy.dal.project import Project
-from deeptracy.dal.scan import Scan
+from deeptracy_core.dal.project import Project
+from deeptracy_core.dal.scan import Scan
 
 
 class Plugin(Base):

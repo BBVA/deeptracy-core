@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import List
 from sqlalchemy.orm import Session
-from deeptracy.dal.models import ScanAnalysis, ScanAnalysisVulnerability
+from deeptracy_core.dal.models import ScanAnalysis, ScanAnalysisVulnerability
 
 
 class ScanAnalysisState(Enum):

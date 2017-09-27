@@ -2,7 +2,7 @@
 
 from enum import Enum
 from sqlalchemy.orm import Session
-from deeptracy.dal.scan import Scan
+from deeptracy_core.dal.scan import Scan
 
 
 class ScanState(Enum):

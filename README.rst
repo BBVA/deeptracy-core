@@ -1,4 +1,5 @@
-# Deeptracy Core
+Deeptracy Core
+==============
 
 Package for plugin development
 

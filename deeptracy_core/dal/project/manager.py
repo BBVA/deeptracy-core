@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.orm import Session
-from deeptracy.dal.project import Project
+from deeptracy_core.dal.project import Project
 
 
 def get_project(project_id: str, session: Session) -> Project:

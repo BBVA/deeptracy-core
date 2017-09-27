@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.orm import Session
-from deeptracy.dal.models import Plugin
+from deeptracy_core.dal.models import Plugin
 
 
 def deactivate_all_plugins(session: Session):
