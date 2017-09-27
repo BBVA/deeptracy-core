@@ -51,6 +51,8 @@ lint: ## check style with flake8
 install: ## install package
 	pip install -U .
 
-.PHONY: version
-install: ## install package
-	pip install -U .
+.PHONY: coverage
+coverage: ## install package
+	coverage run --source deeptracy_core -m unittest discover -s tests/unit
+	coverage report -m --fail-under 80
+	coverage xml -o coverage-reports/report.xml
