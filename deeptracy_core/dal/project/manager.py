@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
+"""Manager function to deal with Project model"""
 
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.project.model import Project
 
 
 def get_project(project_id: str, session: Session) -> Project:
-    """Get a project from its id"""
+    """Get a project from its id
+
+    :param project_id: (str) Id of the project
+    :param session: (Session) Database session
+
+    :rtype: Project
+    :raises ValueError: On invalid project_id or in not found Project
+    """
     if project_id is None:
         raise ValueError('Invalid project id {}'.format(project_id))
 
@@ -16,11 +24,16 @@ def get_project(project_id: str, session: Session) -> Project:
     return project
 
 
-def get_project_list(session: Session):
-    return session.query(Project).all()
+def add_project(repo: str, session: Session) -> Project:
+    """Adds a project to the database
 
+    :param repo: (str) Id of the project
+    :param session: (Session) Database session
 
-def add_project(repo, session: Session) -> Project:
+    :rtype: Project
+    :raises sqlalchemy.exc.IntegrityError: On duplicated repo
+    :raises AssertionError: On missing repo
+    """
     assert type(repo) is str
 
     project = Project(repo=repo)
@@ -28,4 +41,4 @@ def add_project(repo, session: Session) -> Project:
     return project
 
 
-__all__ = ['get_project', 'get_project_list', 'add_project', ]
+__all__ = ('get_project', 'add_project')
