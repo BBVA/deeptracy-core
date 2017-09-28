@@ -16,6 +16,9 @@ class MockSession:
     def close(self):
         pass
 
+    def add(self, object):
+        pass
+
 
 class MockDeeptracyDBEngine:
 
