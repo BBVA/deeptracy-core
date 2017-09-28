@@ -35,6 +35,7 @@ clean-pyc: ## remove Python file artifacts
 .PHONY: clean-test
 clean-test: ## remove test and coverage artifacts
 	rm -rf .tox .coverage htmlcov coverage-reports
+	find . -name '*,cover' -exec rm -fr {} +
 
 install-%:
 	pip install -r $*.txt -U
@@ -55,5 +56,6 @@ install: ## install package
 .PHONY: coverage
 coverage: ## install package
 	coverage run --source deeptracy_core -m unittest discover -s tests/unit
-	coverage report -m --fail-under 80
+	py.test --cov-report annotate --cov-append --cov=deeptracy_core tests/unit
+	coverage report -m
 	coverage xml -o coverage-reports/report.xml
