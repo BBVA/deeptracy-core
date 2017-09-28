@@ -42,6 +42,7 @@ install-%:
 .PHONY: test
 test: ## run tests quickly with the default Python
 	python -m unittest discover -s tests/unit
+	python -m pytest
 
 .PHONY: lint
 lint: ## check style with flake8
@@ -54,5 +55,6 @@ install: ## install package
 .PHONY: coverage
 coverage: ## install package
 	coverage run --source deeptracy_core -m unittest discover -s tests/unit
-	coverage report -m --fail-under 80
+	py.test --cov-report annotate --cov-append --cov=deeptracy_core tests/unit
+	coverage report -m
 	coverage xml -o coverage-reports/report.xml
