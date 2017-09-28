@@ -20,7 +20,7 @@ test_requirements = [str(ir.req) for ir in parse_requirements(
 
 setup(
     name='deeptracy_core',
-    version='0.0.3',
+    version='0.0.4',
     author='BBVA',
     url="https://github.com/BBVA/deeptracy-core",
     description='Deeptracy Dependency Checker',
