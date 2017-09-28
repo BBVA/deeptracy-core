@@ -28,4 +28,3 @@ def run_in_docker(docker_image: str,
         )
 
     yield None
-

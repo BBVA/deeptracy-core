@@ -1,2 +1,1 @@
-from .model import Scan
-from .manager import *
+# -*- coding: utf-8 -*-

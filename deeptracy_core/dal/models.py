@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
+from sqlalchemy import Column, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
-
-from deeptracy_core.dal.project import Project
-from deeptracy_core.dal.scan import Scan
 
 
 class Plugin(Base):

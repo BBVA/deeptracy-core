@@ -11,7 +11,4 @@ class BaseDeeptracyTest(unittest.TestCase):
     def setUp(self):
         """Setup before each test is run"""
         # setup environment
-        os.environ["REDIS_URI"] = "redis://localhost"
-        os.environ["POSTGRES_URI"] = "sqlite:///:memory:"
-        # load config
-
+        pass

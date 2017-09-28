@@ -39,6 +39,10 @@ clean-test: ## remove test and coverage artifacts
 install-%:
 	pip install -r $*.txt -U
 
+.PHONY: test
+test: ## run tests quickly with the default Python
+	python -m unittest discover -s tests/unit
+
 .PHONY: lint
 lint: ## check style with flake8
 	flake8 deeptracy_core
@@ -47,6 +51,8 @@ lint: ## check style with flake8
 install: ## install package
 	pip install -U .
 
-.PHONY: version
-install: ## install package
-	pip install -U .
+.PHONY: coverage
+coverage: ## install package
+	coverage run --source deeptracy_core -m unittest discover -s tests/unit
+	coverage report -m --fail-under 80
+	coverage xml -o coverage-reports/report.xml
