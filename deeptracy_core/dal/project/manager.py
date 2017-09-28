@@ -21,6 +21,8 @@ def get_project_list(session: Session):
 
 
 def add_project(repo, session: Session) -> Project:
+    assert type(repo) is str
+
     project = Project(repo=repo)
     session.add(project)
     return project

@@ -45,5 +45,7 @@ class TestProjectManager(BaseDeeptracyTest):
 
     def test_add_project_missing_repo(self):
         session = MagicMock()
-        project_manager.add_project(None, session)
+        with self.assertRaises(AssertionError):
+            project_manager.add_project(None, session)
+
         assert not session.add.called

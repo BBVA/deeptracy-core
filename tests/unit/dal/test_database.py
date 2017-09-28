@@ -22,7 +22,10 @@ class TestStartScan(BaseDeeptracyTest):
     @mock.patch('deeptracy_core.dal.database.Base')
     @mock.patch('deeptracy_core.dal.database.database_exists', return_value=False)
     @mock.patch.object(sqlalchemy, 'create_engine')
-    def test_after_init_engine_metadata_should_create_all_models(self, mock_database_exists, mock_create_engine, mock_base):
+    def test_after_init_engine_metadata_should_create_all_models(self,
+                                                                 mock_database_exists,
+                                                                 mock_create_engine,
+                                                                 mock_base):
         """After initialization metadata should create all models"""
         db.init_engine()
         assert mock_base.metadata.create_all.called
