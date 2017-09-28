@@ -42,6 +42,7 @@ install-%:
 .PHONY: test
 test: ## run tests quickly with the default Python
 	python -m unittest discover -s tests/unit
+	python -m pytest
 
 .PHONY: lint
 lint: ## check style with flake8
