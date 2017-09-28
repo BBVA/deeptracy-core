@@ -12,7 +12,7 @@ class Project(Base):
     __tablename__ = 'project'
 
     id = Column(String, primary_key=True, default=make_uuid)
-    repo = Column(String)
+    repo = Column(String, unique=True, nullable=False)
 
     scans = relationship('Scan')
 
