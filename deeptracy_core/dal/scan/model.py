@@ -32,6 +32,5 @@ class Scan(Base):
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
-            'scan_analysis': self.scan_analysis,
-            'project_id': self.project.id
+            'scan_analysis': self.scan_analysis
         }
