@@ -47,7 +47,7 @@ test: ## run tests quickly with the default Python
 
 .PHONY: lint
 lint: ## check style with flake8
-	flake8 deeptracy_core
+	flake8
 
 .PHONY: install
 install: ## install package

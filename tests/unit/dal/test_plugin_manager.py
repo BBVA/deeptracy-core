@@ -59,4 +59,3 @@ class TestPluginManager(BaseDeeptracyTest):
         assert plugin.active is True
         assert plugin.name is plugin_name
         assert plugin.lang is plugin_lang
-
