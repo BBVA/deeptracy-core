@@ -18,12 +18,16 @@ class DeeptracyDBEngine:
     def init_engine(self):
         self.engine = sqlalchemy.create_engine(DATABASE_URI)
         self.Session = sessionmaker(bind=self.engine)
-        if not database_exists(db.engine.url):
-            create_database(db.engine.url)
 
-        # reflect the engine into metadata object from models
-        Base.metadata.reflect(bind=self.engine)
-        Base.metadata.create_all(bind=self.engine)
+        if not database_exists(db.engine.url):
+            try:
+                create_database(db.engine.url)
+                # reflect the engine into metadata object from models
+                Base.metadata.reflect(bind=self.engine)
+                Base.metadata.create_all(bind=self.engine)
+            except Exception as e:
+                print(e)
+                pass
 
     @contextmanager
     def session_scope(self):
