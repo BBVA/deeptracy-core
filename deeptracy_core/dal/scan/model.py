@@ -14,9 +14,9 @@ class Scan(Base):
     id = Column(String, primary_key=True, default=make_uuid)
     project_id = Column(String, ForeignKey('project.id'))
     lang = Column(String)
-    analysis_count = Column(Integer)
-    analysis_done = Column(Integer)
-    state = Column(String)
+    analysis_count = Column(Integer, default=0)
+    analysis_done = Column(Integer, default=0)
+    state = Column(String, default='PENDING')
     source_path = Column(String)
 
     scan_analysis = relationship('ScanAnalysis', lazy='subquery')
@@ -32,6 +32,5 @@ class Scan(Base):
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
-            'scan_analysis': self.scan_analysis,
-            'project': self.project
+            'scan_analysis': self.scan_analysis
         }

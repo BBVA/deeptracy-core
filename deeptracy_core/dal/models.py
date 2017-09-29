@@ -7,16 +7,6 @@ from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
 
 
-class Plugin(Base):
-    """SQLAlchemy Plugin model"""
-    __tablename__ = 'plugin'
-
-    id = Column(String, primary_key=True, default=make_uuid)
-    name = Column(String)
-    lang = Column(String)
-    active = Column(Boolean)
-
-
 class ScanAnalysis(Base):
     """SQLAlchemy ScanAnalysis model"""
     __tablename__ = 'scan_analysis'

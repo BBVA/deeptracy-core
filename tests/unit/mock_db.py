@@ -9,6 +9,9 @@ class MockQuery:
     def get(self, id):
         return self._ret_val
 
+    def update(self, condition):
+        return self.condition
+
 
 class MockSession:
     query = MockQuery

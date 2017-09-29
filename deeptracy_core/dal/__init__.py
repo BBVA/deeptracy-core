@@ -32,5 +32,6 @@
 
 from .project.model import Project
 from .scan.model import Scan
-from .models import Plugin, ScanAnalysis, ScanAnalysisVulnerability, ScanVulnerability
+from .plugin.model import Plugin
+from .models import ScanAnalysis, ScanAnalysisVulnerability, ScanVulnerability
 from .plugin_results import *
