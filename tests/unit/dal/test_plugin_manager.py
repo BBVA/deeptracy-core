@@ -7,8 +7,8 @@ from tests.unit.base_test import BaseDeeptracyTest
 from tests.unit.mock_db import MockDeeptracyDBEngine
 
 
-class TestProjectManager(BaseDeeptracyTest):
-    """Test methods in project manager"""
+class TestPluginManager(BaseDeeptracyTest):
+    """Test methods in scan manager"""
 
     @classmethod
     def setUpClass(cls):
