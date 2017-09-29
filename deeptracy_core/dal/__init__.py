@@ -3,10 +3,10 @@
 
  This package contains objects and methods related with the database access. It provides models and managers as well
  as a DeeptracyDBEngine to manage sessions and the database engine.
- 
+
  It uses SQLAlchemy as the connection provider and provides a context manager to be used in order to provide sessions
  and metadata to interact with the db engine.
- 
+
  Models:
     Models are objects that represents tables in the database schema.
 
