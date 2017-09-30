@@ -44,7 +44,7 @@ def get_plugins_for_lang(lang: str, session: Session):
     """
     query = session.query(Plugin)\
         .filter(Plugin.lang == lang)\
-        .filter(Plugin.active is True)
+        .filter(Plugin.active == True)
     return query.all()
 
 
