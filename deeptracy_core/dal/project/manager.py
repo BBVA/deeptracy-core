@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """Manager function to deal with Project model"""
+import base64
+import pickle
 
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.project.model import Project
+from deeptracy_core.dal.project.repo_auth import RepoAuthType, RepoAuth
 
 
 def get_project(project_id: str, session: Session) -> Project:
@@ -24,19 +27,30 @@ def get_project(project_id: str, session: Session) -> Project:
     return project
 
 
-def add_project(repo: str, session: Session) -> Project:
+def add_project(repo: str, session: Session, repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC, repo_auth: RepoAuth=None) -> Project:
     """Adds a project to the database
 
     :param repo: (str) Id of the project
     :param session: (Session) Database session
+    :param repo_auth_type: (RepoAuthType, optional, default RepoAuthType.PUBLIC) Repo authentication type
+    :param repo_auth: (ProjectAuth, optional) Project auth data if project is not public
 
     :rtype: Project
     :raises sqlalchemy.exc.IntegrityError: On duplicated repo
     :raises AssertionError: On missing repo
     """
     assert type(repo) is str
+    assert type(repo_auth_type) is RepoAuthType
 
-    project = Project(repo=repo)
+    encoded_auth = None
+    if repo_auth_type is RepoAuthType.PRIVATE_KEY:
+        assert type(repo_auth) is RepoAuth
+        assert type(repo_auth.pkey_str) is str
+
+        pickled = pickle.dumps(repo_auth.to_dict())
+        encoded_auth = base64.b64encode(pickled)
+
+    project = Project(repo=repo, repo_auth_type=repo_auth_type.name, repo_auth=encoded_auth)
     session.add(project)
     return project
 
