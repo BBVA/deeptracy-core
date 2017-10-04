@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import enum
 
 
@@ -11,7 +13,7 @@ class PluginSeverityEnum(enum.Enum):
 
 class PluginResult:
 
-    __slots__ = ["library", "version", "severity", "summary", "advisory"]
+    __slots__ = ['library', 'version', 'severity', 'summary', 'advisory']
 
     def __init__(self,
                  library: str,
@@ -21,7 +23,7 @@ class PluginResult:
                  summary: str = None,
                  advisory: str = None):
         """
-        >>> PluginResult("retirejs", "1.0.1", PluginSeverityEnum.MEDIUM)
+        >>> PluginResult('retirejs', '1.0.1', PluginSeverityEnum.MEDIUM)
 
         :param library: Library name
         :param version: Version of library. i.e: 1.0.1 | 1.0.3-r5 ....
@@ -41,8 +43,16 @@ class PluginResult:
         self.library = library
         self.version = version
         self.severity = severity.value
-        self.summary = summary or ""
-        self.advisory = advisory or ""
+        self.summary = summary or None
+        self.advisory = advisory or None
+
+    def to_dict(self):
+        """
+        Get a serializable dict from the object with all his slots
+
+        :return: dictionary with all the attributes defined in the slots
+        """
+        return {slot: getattr(self, slot) for slot in self.__slots__}
 
 
-__all__ = ("PluginSeverityEnum", "PluginResult")
+__all__ = ('PluginSeverityEnum', 'PluginResult')
