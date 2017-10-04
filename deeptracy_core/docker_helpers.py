@@ -9,10 +9,11 @@ from contextlib import contextmanager
 
 @contextmanager
 def run_in_docker(docker_image: str,
+                  source_code_path: str,
                   *,
                   environment_vars: List[str] = None,
                   command: str = None,
-                  working_dir: str ="/opt/app") -> str:
+                  result_path: str ="/tmp/results") -> str:
     """
     This context manager launch a Docker image and return the content of file
     assigned to environment variable 'OUTPUT_FILE'.
@@ -39,9 +40,10 @@ def run_in_docker(docker_image: str,
     hello
 
     :param docker_image: docker image from DockerHub
+    :param source_code_path: absolute path for source code to analyze
     :param environment_vars: List with additional environment vars
     :param command: additional command to pass to docker image when it runs
-    :param working_dir: working directory for the docker app
+    :param result_path: path for results of execution
     :rtype: str
     """
 
@@ -64,17 +66,20 @@ def run_in_docker(docker_image: str,
 
         docker_client = docker.from_env()
 
-        result_file = "".join(str(random.randint(0, 9))
-                              for _ in range(30))
-        host_result_file = os.path.join(tmp_dir, result_file)
-        container_result_file = os.path.join(working_dir, result_file)
+        result_file_name = "".join(str(random.randint(0, 9))
+                                   for _ in range(30))
+        host_result_file = os.path.join(tmp_dir, result_file_name)
 
         # Choice volumes
         docker_volumes = {
             tmp_dir: {
-                'bind': working_dir,
+                'bind': result_path,
                 'mode': 'rw'
-            }
+            },
+            source_code_path: {
+                'bind': "/opt/app",
+                'mode': 'ro'
+            },
         }
 
         # --------------------------------------------------------------------------
@@ -82,22 +87,19 @@ def run_in_docker(docker_image: str,
         # --------------------------------------------------------------------------
         envs = environment_vars or []
         envs.extend([
-            "OUTPUT_FILE={}".format(container_result_file)
+            # "OUTPUT_FILE={}".format(container_result_file)
+            "OUTPUT_FILE={}".format(result_file_name)
         ])
 
         # Run content inside docker
         docker_client.containers.run(
             image=docker_image,
-            command=command,
             remove=True,
+            command=command,
             environment=envs,
-            working_dir=working_dir,
             volumes=docker_volumes
         )
 
         # Read result file
-        try:
-            with open(host_result_file, "r") as f:
-                yield f.read()
-        except IOError:
-            yield ""
+        with open(host_result_file, "r") as f:
+            yield f.read()
