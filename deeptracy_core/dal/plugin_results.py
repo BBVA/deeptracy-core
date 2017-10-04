@@ -11,6 +11,8 @@ class PluginSeverityEnum(enum.Enum):
 
 class PluginResult:
 
+    __slots__ = ["library", "version", "severity", "summary", "advisory"]
+
     def __init__(self,
                  library: str,
                  version: str,
