@@ -5,4 +5,4 @@ from .dal import *
 from .decorator import *
 from .docker_helpers import *
 
-__version__ = '0.0.10'
+__version__ = '0.0.11'
