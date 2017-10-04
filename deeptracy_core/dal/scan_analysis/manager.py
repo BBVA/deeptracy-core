@@ -2,7 +2,9 @@
 from enum import Enum
 from typing import List
 from sqlalchemy.orm import Session
-from deeptracy_core.dal.models import ScanAnalysis, ScanAnalysisVulnerability
+from deeptracy_core.dal.models import ScanAnalysisVulnerability
+from deeptracy_core.dal.scan_analysis.model import ScanAnalysis
+from deeptracy_core.dal.plugin_results import PluginResult
 
 
 class ScanAnalysisState(Enum):
@@ -14,20 +16,19 @@ def get_scan_analysis(scan_analysis_id: str, session: Session) -> ScanAnalysis:
     return scan_analysis
 
 
-def add_scan_vulnerabilities_results(scan_analysis_id: str, vulnerabilities: List[dict], session: Session):
+def add_scan_vulnerabilities_results(scan_analysis_id: str, vulnerabilities: List[PluginResult], session: Session):
 
-    if scan_analysis_id is None:
-        raise ValueError('Invalid scan analysis id {}'.format(scan_analysis_id))
+    assert type(scan_analysis_id) is str
 
-    for vul in vulnerabilities:
-        scan_analysis_vul = ScanAnalysisVulnerability(
+    for plugin_result in vulnerabilities:
+        scan_analaysis_vul = ScanAnalysisVulnerability(
                                 scan_analysis_id=scan_analysis_id,
-                                library=vul.get('library'),
-                                version=vul.get('version'),
-                                severity=vul.get('severity'),
-                                summary=vul.get('summary'),
-                                advisory=vul.get('advisory'))
-        session.add(scan_analysis_vul)
+                                library=plugin_result.library,
+                                version=plugin_result.version,
+                                severity=plugin_result.severity,
+                                summary=plugin_result.summary,
+                                advisory=plugin_result.advisory)
+        session.add(scan_analaysis_vul)
 
 
 def add_scan_analysis(scan_id: str, plugin_id: str, session: Session) -> ScanAnalysis:
