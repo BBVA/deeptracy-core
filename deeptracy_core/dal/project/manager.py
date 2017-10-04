@@ -27,7 +27,10 @@ def get_project(project_id: str, session: Session) -> Project:
     return project
 
 
-def add_project(repo: str, session: Session, repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC, repo_auth: RepoAuth=None) -> Project:
+def add_project(
+        repo: str, session: Session,
+        repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC,
+        repo_auth: RepoAuth=None) -> Project:
     """Adds a project to the database
 
     :param repo: (str) Id of the project
