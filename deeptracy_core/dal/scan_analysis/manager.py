@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from enum import Enum
 from typing import List
 from sqlalchemy.orm import Session
