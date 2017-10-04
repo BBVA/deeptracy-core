@@ -19,4 +19,3 @@ class ScanAnalysis(Base):
     scan_analysis_vulnerability = relationship('ScanAnalysisVulnerability')
     plugin = relationship('Plugin')
     scan = relationship('Scan', lazy='subquery')
-
