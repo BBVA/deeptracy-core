@@ -7,6 +7,33 @@ from typing import List
 from contextlib import contextmanager
 
 
+def get_plugin_image(plugin_path: str = None) -> str:
+    import inspect
+    import os.path as op
+
+    def get_origin_file() -> str:
+        for x in range(100):
+            try:
+                path = inspect.stack()[x][1]
+                if "plugins" in path:
+                    return path
+
+            except IndexError:
+                return ""
+
+    plugin_path = plugin_path or op.dirname(get_origin_file())
+
+    # Get docker version
+    docker_version = open(op.abspath(op.join(plugin_path, "VERSION")),
+                          "r").read().replace("\n", "")
+
+    docker_image = open(op.abspath(op.join(plugin_path,
+                                           "IMAGE_NAME")),
+                        "r").read().replace("\n", "")
+
+    return "bbvalabs/{}:{}".format(docker_image, docker_version)
+
+
 @contextmanager
 def run_in_docker(docker_image: str,
                   source_code_path: str,
