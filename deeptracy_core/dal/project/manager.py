@@ -33,6 +33,8 @@ def add_project(
         repo_auth: RepoAuth=None) -> Project:
     """Adds a project to the database
 
+    If the project has a RepoAuth that needs to be saved, the contents are encoded before saving them
+
     :param repo: (str) Id of the project
     :param session: (Session) Database session
     :param repo_auth_type: (RepoAuthType, optional, default RepoAuthType.PUBLIC) Repo authentication type
@@ -46,9 +48,9 @@ def add_project(
     assert type(repo_auth_type) is RepoAuthType
 
     encoded_auth = None
-    if repo_auth_type is RepoAuthType.PRIVATE_KEY:
+    if repo_auth_type is RepoAuthType.USER_PWD:
         assert type(repo_auth) is RepoAuth
-        assert type(repo_auth.pkey_str) is str
+        assert type(repo_auth.user_pwd) is str
 
         pickled = pickle.dumps(repo_auth.to_dict())
         encoded_auth = base64.b64encode(pickled)

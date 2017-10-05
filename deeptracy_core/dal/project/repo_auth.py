@@ -14,17 +14,18 @@ import enum
 
 class RepoAuthType(enum.Enum):
     PUBLIC = 'PUBLIC'
-    PRIVATE_KEY = 'PRIVATE_KEY'
+    LOCAL_PRIVATE_KEY = 'LOCAL_PRIVATE_KEY'
+    USER_PWD = 'USER_PWD'
 
 
 class RepoAuth:
-    def __init__(self, pkey_str: str=None):
-        self.pkey_str = pkey_str
+    def __init__(self, user_pwd: str=None):
+        self.user_pwd = user_pwd
 
     def to_dict(self) -> dict:
         _dict = {}
 
-        if self.pkey_str is not None:
-            _dict['pkey_str'] = self.pkey_str
+        if self.user_pwd is not None:
+            _dict['user_pwd'] = self.user_pwd
 
         return _dict

@@ -53,12 +53,12 @@ class TestProjectManager(BaseDeeptracyTest):
 
         assert not session.add.called
 
-    def test_add_project_with_auth_is_b64encoded(self):
+    def test_add_project_with_user_pwd_auth_is_b64encoded(self):
         repo_url = 'http://repo.com'
         session = MagicMock()
-        repo_auth = RepoAuth(pkey_str='=-private_key-=')
+        repo_auth = RepoAuth(user_pwd='user@pwd')
 
-        project_manager.add_project(repo_url, session, repo_auth_type=RepoAuthType.PRIVATE_KEY, repo_auth=repo_auth)
+        project_manager.add_project(repo_url, session, repo_auth_type=RepoAuthType.USER_PWD, repo_auth=repo_auth)
         assert session.add.called
         kall = session.add.call_args
         args, _ = kall
