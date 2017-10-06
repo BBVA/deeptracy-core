@@ -27,6 +27,20 @@ def get_project(project_id: str, session: Session) -> Project:
     return project
 
 
+def get_projects(session: Session) -> Project:
+    """Get all projects
+
+    :param session: (Session) Database session
+
+    :rtype: Project Array
+    """
+
+    projects = session.query(Project)
+    if projects is None:
+        return []
+
+    return projects
+
 def add_project(
         repo: str, session: Session,
         repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC,
@@ -60,4 +74,4 @@ def add_project(
     return project
 
 
-__all__ = ('get_project', 'add_project')
+__all__ = ('get_project', 'get_projects', 'add_project')

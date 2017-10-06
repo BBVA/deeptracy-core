@@ -38,6 +38,29 @@ class TestProjectManager(BaseDeeptracyTest):
         assert project is not None
         assert project.repo == 'repo'
 
+    def test_get_projects_with_empty_table(self):
+        # mock the return value
+        self.db.Session.query._ret_val = []
+
+        projects = project_manager.get_projects(self.db.Session())
+        assert projects is not []
+
+    def test_get_projects_when_only_one_on_db(self):
+        # mock the return value
+        self.db.Session.query._ret_val = [Project(id='123', repo='repo')]
+
+        projects = project_manager.get_projects(self.db.Session())
+        assert projects is not [Project(id='123', repo='repo')]
+
+    def test_get_projects_when_more_than_one_on_db(self):
+        # mock the return value
+        self.db.Session.query._ret_val = [Project(id='123', repo='repo'), Project(id='456', repo='repo')]
+
+        projects = project_manager.get_projects(self.db.Session())
+        assert projects is not [Project(id='123', repo='repo'), Project(id='456', repo='repo')]
+
+
+
     def test_add_project_valid_repo(self):
         repo_url = 'http://repo.com'
         session = MagicMock()

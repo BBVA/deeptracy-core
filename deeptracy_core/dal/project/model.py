@@ -15,7 +15,7 @@ class Project(Base):
     id = Column(String, primary_key=True, default=make_uuid)
     repo = Column(String, unique=True, nullable=False)
     repo_auth_type = Column(String, default=RepoAuthType.PUBLIC.name)
-    repo_auth = Column(String)  # Auth is saved as a base64 string that represents a RepoAuth object
+    repo_auth = Column(String, default='')  # Auth is saved as a base64 string that represents a RepoAuth object
 
     scans = relationship('Scan')
 
