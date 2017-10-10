@@ -15,8 +15,8 @@ class DeeptracyDBEngine:
     engine = None
     Session = None
 
-    def init_engine(self):
-        self.engine = sqlalchemy.create_engine(DATABASE_URI)
+    def init_engine(self, db_uri=None):
+        self.engine = sqlalchemy.create_engine(db_uri or DATABASE_URI)
         self.Session = sessionmaker(bind=self.engine)
 
         if not database_exists(db.engine.url):
