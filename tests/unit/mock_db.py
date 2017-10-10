@@ -6,6 +6,9 @@ class MockQuery:
     def __init__(self, model):
         self._model = model
 
+    def all(self):
+        return [self._ret_val]
+
     def get(self, id):
         return self._ret_val
 
