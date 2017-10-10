@@ -15,7 +15,9 @@ class Project(Base):
     id = Column(String, primary_key=True, default=make_uuid)
     repo = Column(String, unique=True, nullable=False)
     repo_auth_type = Column(String, default=RepoAuthType.PUBLIC.name)
-    repo_auth = Column(String)  # Auth is saved as a base64 string that represents a RepoAuth object
+    repo_auth = Column(String, default='')  # Auth is saved as a base64 string that represents a RepoAuth object
+    hook_type = Column(String, default='')  # Notification hook type
+    hook_data = Column(String, default='')  # Notification hook data
 
     scans = relationship('Scan')
 
@@ -23,5 +25,7 @@ class Project(Base):
         return {
             'id': self.id,
             'repo': self.repo,
-            'scans': len(self.scans)
+            'scans': len(self.scans),
+            'hookType': self.hook_type,
+            'hookData': self.hook_data
         }
