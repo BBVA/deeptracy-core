@@ -16,8 +16,8 @@ class Project(Base):
     repo = Column(String, unique=True, nullable=False)
     repo_auth_type = Column(String, default=RepoAuthType.PUBLIC.name)
     repo_auth = Column(String, default='')  # Auth is saved as a base64 string that represents a RepoAuth object
-    hook_type = Column(String, default='')
-    hook_data = Column(String, default='')
+    hook_type = Column(String, default='')  # Notification hook type
+    hook_data = Column(String, default='')  # Notification hook data
 
     scans = relationship('Scan')
 

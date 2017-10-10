@@ -95,36 +95,35 @@ def get_projects(session: Session) -> Project:
 
     return projects
 
+
 def update_project(
-        repo: str, session: Session,
-        repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC,
-        repo_auth: RepoAuth=None) -> Project:
+        id: str, session: Session,
+        hook_type: str=None,
+        hook_data: str=None,
+        **kwargs) -> Project:
     """Update a project data on the database
 
     If the project has a RepoAuth that needs to be saved, the contents are encoded before saving them
 
-    :param repo: (str) Id of the project
+    :param id: (str) Id of the project
     :param session: (Session) Database session
-    :param repo_auth_type: (RepoAuthType, optional, default RepoAuthType.PUBLIC) Repo authentication type
-    :param repo_auth: (ProjectAuth, optional) Project auth data if project is not public
+    :param hook_type: (str, optional) Project notification hook type
+    :param hook_data: (str, optional) Project notification hook data
 
     :rtype: Project
-    :raises sqlalchemy.exc.IntegrityError: On duplicated repo
-    :raises AssertionError: On missing repo
     """
-    assert type(repo) is str
-    assert type(repo_auth_type) is RepoAuthType
 
-    encoded_auth = None
-    if repo_auth_type is RepoAuthType.USER_PWD:
-        assert type(repo_auth) is RepoAuth
-        assert type(repo_auth.user_pwd) is str
+    update_dict = {}
+    if hook_type is not None:
+        assert type(hook_type) is str
+        update_dict['hook_type'] = hook_type
 
-        pickled = pickle.dumps(repo_auth.to_dict())
-        encoded_auth = base64.b64encode(pickled)
+    if hook_data is not None:
+        assert type(hook_data) is str
+        update_dict['hook_data'] = hook_data
 
-    session.query(Project).filter(Project.repo == repo).update({'repo_auth_type': repo_auth_type.name, 'repo_auth': encoded_auth})
-    return project
+    session.query(Project).filter(Project.id == id).update(update_dict)
+    return get_project(id, session)
 
 
 __all__ = ('add_project', 'delete_project', 'delete_projects', 'get_project', 'get_projects', 'update_project')

@@ -59,8 +59,6 @@ class TestProjectManager(BaseDeeptracyTest):
         projects = project_manager.get_projects(self.db.Session())
         assert projects is not [Project(id='123', repo='repo'), Project(id='456', repo='repo')]
 
-
-
     def test_add_project_valid_repo(self):
         repo_url = 'http://repo.com'
         session = MagicMock()
