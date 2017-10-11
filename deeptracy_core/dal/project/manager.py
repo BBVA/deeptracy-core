@@ -15,16 +15,21 @@
 """Manager function to deal with Project model"""
 import base64
 import pickle
+import json
 
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.project.model import Project
 from deeptracy_core.dal.project.repo_auth import RepoAuthType, RepoAuth
+from deeptracy_core.dal.project.project_hooks import ProjectHookType
 
 
 def add_project(
         repo: str, session: Session,
         repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC,
-        repo_auth: RepoAuth=None) -> Project:
+        repo_auth: RepoAuth=None,
+        hook_type: str= ProjectHookType.NONE.name,
+        hook_data: dict=None,
+        **kwargs) -> Project:
     """Adds a project to the database
 
     If the project has a RepoAuth that needs to be saved, the contents are encoded before saving them
@@ -33,6 +38,8 @@ def add_project(
     :param session: (Session) Database session
     :param repo_auth_type: (RepoAuthType, optional, default RepoAuthType.PUBLIC) Repo authentication type
     :param repo_auth: (ProjectAuth, optional) Project auth data if project is not public
+    :param hook_type: (ProjectHookType, optional) Project notification hook type
+    :param hook_data: (str, optional) Project notification hook data
 
     :rtype: Project
     :raises sqlalchemy.exc.IntegrityError: On duplicated repo
@@ -40,6 +47,7 @@ def add_project(
     """
     assert type(repo) is str
     assert type(repo_auth_type) is RepoAuthType
+    assert type(hook_type) is str
 
     encoded_auth = None
     if repo_auth_type is RepoAuthType.USER_PWD:
@@ -49,7 +57,25 @@ def add_project(
         pickled = pickle.dumps(repo_auth.to_dict())
         encoded_auth = base64.b64encode(pickled)
 
-    project = Project(repo=repo, repo_auth_type=repo_auth_type.name, repo_auth=encoded_auth)
+    # Check and build notification hooks
+    try:
+        ProjectHookType[hook_type]
+    except KeyError:
+        raise AssertionError('invalid hook type')
+
+    hooks = {'hook_type': hook_type}
+    if hook_type is ProjectHookType.SLACK.name:
+        assert type(hook_data) is dict
+        assert 'webhook_url' in hook_data
+        hooks['hook_data'] = hook_data.get('webhook_url')
+
+    # build the project object to persist in session
+    project = Project(
+        repo=repo,
+        repo_auth_type=repo_auth_type.name,
+        repo_auth=encoded_auth,
+        **hooks
+    )
     session.add(project)
     return project
 
@@ -129,11 +155,17 @@ def update_project(
     update_dict = {}
     if hook_type is not None:
         assert type(hook_type) is str
+        # checks valid hook type
+        try:
+            ProjectHookType[hook_type]
+        except KeyError:
+            raise AssertionError('invalid hook type')
+
         update_dict['hook_type'] = hook_type
 
     if hook_data is not None:
-        assert type(hook_data) is str
-        update_dict['hook_data'] = hook_data
+        assert type(hook_data) is dict
+        update_dict['hook_data'] = json.dumps(hook_data)
 
     session.query(Project).filter(Project.id == id).update(update_dict)
     return get_project(id, session)
