@@ -16,11 +16,14 @@
 import base64
 import pickle
 import json
+import logging
 
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.project.model import Project
 from deeptracy_core.dal.project.repo_auth import RepoAuthType, RepoAuth
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
+
+log = logging.getLogger(__name__)
 
 
 def add_project(
@@ -64,7 +67,7 @@ def add_project(
         raise AssertionError('invalid hook type')
 
     hooks = {'hook_type': hook_type}
-    if hook_type is ProjectHookType.SLACK.name:
+    if hook_type == ProjectHookType.SLACK.name:
         assert type(hook_data) is dict
         assert 'webhook_url' in hook_data
         hooks['hook_data'] = json.dumps(hook_data)
@@ -76,6 +79,9 @@ def add_project(
         repo_auth=encoded_auth,
         **hooks
     )
+
+    log.debug('save project {}'.format(project.to_dict()))
+
     session.add(project)
     return project
 
