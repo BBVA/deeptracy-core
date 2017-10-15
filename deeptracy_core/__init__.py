@@ -16,4 +16,4 @@ from .dal import *
 from .decorator import *
 from .docker_helpers import *
 
-__version__ = '0.0.14'
+__version__ = '0.0.15'

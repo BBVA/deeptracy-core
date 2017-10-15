@@ -45,7 +45,7 @@ class PluginResult:
         """
         assert type(library) is str
         assert type(version) is str
-        assert type(severity) is PluginSeverityEnum
+        assert isinstance(severity, PluginSeverityEnum)
 
         if summary is not None:
             assert type(summary) is str
