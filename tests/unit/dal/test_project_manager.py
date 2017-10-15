@@ -14,6 +14,7 @@
 
 import pickle
 import base64
+import json
 
 import deeptracy_core.dal.project.manager as project_manager
 from unittest.mock import MagicMock
@@ -124,5 +125,6 @@ class TestProjectManager(BaseDeeptracyTest):
         assert isinstance(project, Project)
         assert project.repo == repo_url
         assert project.hook_type == ProjectHookType.SLACK.name
-        assert project.hook_data == 'test_webhook'
+
+        assert json.loads(project.hook_data) == {"webhook_url": "test_webhook"}
         assert session.add.called
