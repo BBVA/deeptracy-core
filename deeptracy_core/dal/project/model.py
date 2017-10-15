@@ -37,10 +37,18 @@ class Project(Base):
     scans = relationship('Scan')
 
     def to_dict(self):
-        return {
+        project = {
             'id': self.id,
             'repo': self.repo,
             'scans': len(self.scans),
-            'hookType': self.hook_type,
-            'hookData': json.loads(self.hook_data)
+            'hookType': self.hook_type
         }
+
+        try:
+            data_dict = json.loads(self.hook_data)
+            project['hookData'] = data_dict
+        except Exception:
+            # if hook_data is not a valid json
+            project['hookData'] = ''
+
+        return project
