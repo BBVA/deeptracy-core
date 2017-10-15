@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
@@ -40,5 +42,5 @@ class Project(Base):
             'repo': self.repo,
             'scans': len(self.scans),
             'hookType': self.hook_type,
-            'hookData': self.hook_data
+            'hookData': json.loads(self.hook_data)
         }
