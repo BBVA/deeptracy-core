@@ -12,8 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .dal import *
-from .decorator import *
-from .docker_helpers import *
+"""Project Notification Hooks
 
-__version__ = '0.0.16'
+This classes are related to project notifications
+"""
+
+import enum
+
+
+class ProjectHookType(enum.Enum):
+    NONE = 'NONE'
+    SLACK = 'SLACK'
+
+
+class ProjectHookData:
+    def __init__(self, slack_data: str=None):
+        self.slack_data = slack_data
+
+    def to_dict(self) -> dict:
+        _dict = {}
+
+        if self.user_pwd is not None:
+            _dict['user_pwd'] = self.user_pwd
+
+        return _dict

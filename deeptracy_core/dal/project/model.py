@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
 from deeptracy_core.dal.project.repo_auth import RepoAuthType
+from deeptracy_core.dal.project.project_hooks import ProjectHookType
 
 
 class Project(Base):
@@ -28,16 +31,24 @@ class Project(Base):
     repo = Column(String, unique=True, nullable=False)
     repo_auth_type = Column(String, default=RepoAuthType.PUBLIC.name)
     repo_auth = Column(String, default='')  # Auth is saved as a base64 string that represents a RepoAuth object
-    hook_type = Column(String, default='')  # Notification hook type
+    hook_type = Column(String, default=ProjectHookType.NONE.name)  # Notification hook type
     hook_data = Column(String, default='')  # Notification hook data
 
     scans = relationship('Scan')
 
     def to_dict(self):
-        return {
+        project = {
             'id': self.id,
             'repo': self.repo,
             'scans': len(self.scans),
-            'hookType': self.hook_type,
-            'hookData': self.hook_data
+            'hookType': self.hook_type
         }
+
+        try:
+            data_dict = json.loads(self.hook_data)
+            project['hookData'] = data_dict
+        except Exception:
+            # if hook_data is not a valid json
+            project['hookData'] = ''
+
+        return project

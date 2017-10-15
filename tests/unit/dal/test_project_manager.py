@@ -19,6 +19,7 @@ import deeptracy_core.dal.project.manager as project_manager
 from unittest.mock import MagicMock
 from deeptracy_core.dal.project.model import Project
 from deeptracy_core.dal.project.repo_auth import RepoAuth, RepoAuthType
+from deeptracy_core.dal.project.project_hooks import ProjectHookType
 from tests.unit.base_test import BaseDeeptracyTest
 from tests.unit.mock_db import MockDeeptracyDBEngine
 
@@ -107,3 +108,21 @@ class TestProjectManager(BaseDeeptracyTest):
         decoded_auth = base64.b64decode(encoded_auth)
         unpickled = pickle.loads(decoded_auth)
         assert repo_auth.to_dict() == unpickled
+
+    def test_add_project_with_hooks_in_kwargs(self):
+        session = MagicMock()
+        data = {
+            'repo_auth_type': RepoAuthType.PUBLIC,
+            'hook_type': ProjectHookType.SLACK.name,
+            'hook_data': {
+                'webhook_url': 'test_webhook'
+            }
+        }
+        repo_url = 'http://repo.com'
+        project = project_manager.add_project(repo_url, session, **data)
+
+        assert isinstance(project, Project)
+        assert project.repo == repo_url
+        assert project.hook_type == ProjectHookType.SLACK.name
+        assert project.hook_data == 'test_webhook'
+        assert session.add.called
