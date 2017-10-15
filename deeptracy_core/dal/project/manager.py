@@ -67,7 +67,7 @@ def add_project(
     if hook_type is ProjectHookType.SLACK.name:
         assert type(hook_data) is dict
         assert 'webhook_url' in hook_data
-        hooks['hook_data'] = hook_data.get('webhook_url')
+        hooks['hook_data'] = json.dumps(hook_data)
 
     # build the project object to persist in session
     project = Project(
@@ -165,6 +165,7 @@ def update_project(
 
     if hook_data is not None:
         assert type(hook_data) is dict
+        assert 'webhook_url' in hook_data
         update_dict['hook_data'] = json.dumps(hook_data)
 
     session.query(Project).filter(Project.id == id).update(update_dict)
