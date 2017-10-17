@@ -89,31 +89,10 @@ class TestProjectManager(BaseDeeptracyTest):
 
         assert not session.add.called
 
-    def test_add_project_with_user_pwd_auth_is_b64encoded(self):
-        repo_url = 'http://repo.com'
-        session = MagicMock()
-        repo_auth = RepoAuth(user_pwd='user@pwd')
-
-        project_manager.add_project(repo_url, session, repo_auth_type=RepoAuthType.USER_PWD, repo_auth=repo_auth)
-        assert session.add.called
-        kall = session.add.call_args
-        args, _ = kall
-        project = args[0]
-
-        # assert that the auth has been pickled and b64 encoded
-        pickled = pickle.dumps(repo_auth.to_dict())
-        encoded_auth = base64.b64encode(pickled)
-        assert project.repo_auth == encoded_auth
-
-        # assert that the auth can be unpiclked and b64 decoded
-        decoded_auth = base64.b64decode(encoded_auth)
-        unpickled = pickle.loads(decoded_auth)
-        assert repo_auth.to_dict() == unpickled
-
     def test_add_project_with_hooks_in_kwargs(self):
         session = MagicMock()
         data = {
-            'repo_auth_type': RepoAuthType.PUBLIC,
+            'repo_auth_type': RepoAuthType.PUBLIC.name,
             'hook_type': ProjectHookType.SLACK.name,
             'hook_data': {
                 'webhook_url': 'test_webhook'
