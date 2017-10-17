@@ -28,8 +28,7 @@ log = logging.getLogger(__name__)
 
 def add_project(
         repo: str, session: Session,
-        repo_auth_type: RepoAuthType=RepoAuthType.PUBLIC,
-        repo_auth: RepoAuth=None,
+        repo_auth_type: str=RepoAuthType.PUBLIC.name,
         hook_type: str= ProjectHookType.NONE.name,
         hook_data: dict=None,
         **kwargs) -> Project:
@@ -39,8 +38,7 @@ def add_project(
 
     :param repo: (str) Id of the project
     :param session: (Session) Database session
-    :param repo_auth_type: (RepoAuthType, optional, default RepoAuthType.PUBLIC) Repo authentication type
-    :param repo_auth: (ProjectAuth, optional) Project auth data if project is not public
+    :param repo_auth_type: (str, optional) Repo authentication type
     :param hook_type: (ProjectHookType, optional) Project notification hook type
     :param hook_data: (str, optional) Project notification hook data
 
@@ -49,16 +47,16 @@ def add_project(
     :raises AssertionError: On missing repo
     """
     assert type(repo) is str
-    assert type(repo_auth_type) is RepoAuthType
+    assert type(repo_auth_type) is str
     assert type(hook_type) is str
 
-    encoded_auth = None
-    if repo_auth_type is RepoAuthType.USER_PWD:
-        assert type(repo_auth) is RepoAuth
-        assert type(repo_auth.user_pwd) is str
+    # Check and build repo auth
+    try:
+        RepoAuthType[repo_auth_type]
+    except KeyError:
+        raise AssertionError('invalid repo auth type')
 
-        pickled = pickle.dumps(repo_auth.to_dict())
-        encoded_auth = base64.b64encode(pickled)
+    repo_auth = {'repo_auth_type': repo_auth_type}
 
     # Check and build notification hooks
     try:
@@ -75,8 +73,7 @@ def add_project(
     # build the project object to persist in session
     project = Project(
         repo=repo,
-        repo_auth_type=repo_auth_type.name,
-        repo_auth=encoded_auth,
+        **repo_auth,
         **hooks
     )
 
@@ -143,6 +140,7 @@ def get_projects(session: Session) -> Project:
 
 def update_project(
         id: str, session: Session,
+        repo_auth_type: str=None,
         hook_type: str=None,
         hook_data: str=None,
         **kwargs) -> Project:
@@ -152,6 +150,7 @@ def update_project(
 
     :param id: (str) Id of the project
     :param session: (Session) Database session
+    :param repo_auth_type: (str, optional) Project repository auth type
     :param hook_type: (str, optional) Project notification hook type
     :param hook_data: (str, optional) Project notification hook data
 
@@ -159,9 +158,21 @@ def update_project(
     """
 
     update_dict = {}
+    # checks valid auth type
+    if repo_auth_type is not None:
+        assert type(repo_auth_type) is str
+
+        try:
+            RepoAuthType[repo_auth_type]
+        except KeyError:
+            raise AssertionError('invalid repo auth type')
+
+        update_dict['repo_auth_type'] = repo_auth_type
+
+    # checks valid hook type
     if hook_type is not None:
         assert type(hook_type) is str
-        # checks valid hook type
+
         try:
             ProjectHookType[hook_type]
         except KeyError:

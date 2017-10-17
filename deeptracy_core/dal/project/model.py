@@ -41,7 +41,8 @@ class Project(Base):
             'id': self.id,
             'repo': self.repo,
             'scans': len(self.scans),
-            'hookType': self.hook_type
+            'hookType': self.repo_auth_type,
+            'authType': self.hook_type
         }
 
         try:
