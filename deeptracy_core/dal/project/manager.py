@@ -104,6 +104,25 @@ def delete_projects(session: Session):
     return
 
 
+def get_project_by_repo(repo: str, session: Session) -> Project:
+    """Get a project from its repo url
+
+    :param repo: (str) repo of the project
+    :param session: (Session) Database session
+
+    :rtype: Project
+    :raises ValueError: On invalid project_id or in not found Project
+    """
+    if repo is None:
+        raise ValueError('Invalid project repo')
+
+    project = session.query(Project).filter(Project.repo == repo).first()
+    if project is None:
+        raise ValueError('Project with repo {} not found in database'.format(repo))
+
+    return project
+
+
 def get_project(project_id: str, session: Session) -> Project:
     """Get a project from its id
 
