@@ -37,7 +37,7 @@ setup(
     url="https://github.com/BBVA/deeptracy-core",
     description='Deeptracy Dependency Checker',
     long_description=readme,
-    packages=find_packages('deeptracy', exclude='tests'),
+    packages=find_packages(),
     keywords='deeptracy core',
     install_requires=requirements,
     classifiers=[
