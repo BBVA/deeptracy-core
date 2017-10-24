@@ -43,6 +43,7 @@ def get_scan(scan_id: str, session: Session) -> Scan:
 
 
 def update_scan_state(scan: Scan, state: ScanState, session: Session) -> Scan:
+    """Updates a scan state"""
     if scan.id is None:
         raise ValueError('Cant create scans')
 
