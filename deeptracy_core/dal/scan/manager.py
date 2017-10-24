@@ -20,6 +20,7 @@ from deeptracy_core.dal.scan.model import Scan
 class ScanState(Enum):
     PENDING = 'PENDING'
     RUNNING = 'RUNNING'
+    DONE = 'DONE'
     INVALID_REPO = 'INVALID_REPO'
     NO_PLUGINS_FOR_LANGUAJE = 'NO_PLUGINS_FOR_LANGUAJE'
 
