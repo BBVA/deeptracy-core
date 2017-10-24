@@ -31,7 +31,7 @@ import enum
 class RepoAuthType(enum.Enum):
     PUBLIC = 'PUBLIC'
     LOCAL_PRIVATE_KEY = 'LOCAL_PRIVATE_KEY'
-    USER_PWD = 'USER_PWD'
+    # USER_PWD = 'USER_PWD'
 
 
 class RepoAuth:
