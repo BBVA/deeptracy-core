@@ -48,7 +48,7 @@ class DeeptracyDBEngine:
             yield session
             if commit:
                 session.commit()
-        except:
+        except:  # noqa
             session.rollback()
             raise
         finally:
