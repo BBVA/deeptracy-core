@@ -20,8 +20,9 @@ from deeptracy_core.dal.scan.model import Scan
 class ScanState(Enum):
     PENDING = 'PENDING'
     RUNNING = 'RUNNING'
+    DONE = 'DONE'
     INVALID_REPO = 'INVALID_REPO'
-    NO_PLUGINS_FOR_LANGUAJE = 'NO_PLUGINS_FOR_LANGUAJE'
+    NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
 
 
 def add_scan(project_id: str, lang: str, session: Session) -> Scan:
@@ -43,6 +44,7 @@ def get_scan(scan_id: str, session: Session) -> Scan:
 
 
 def update_scan_state(scan: Scan, state: ScanState, session: Session) -> Scan:
+    """Updates a scan state"""
     if scan.id is None:
         raise ValueError('Cant create scans')
 

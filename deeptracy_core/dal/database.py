@@ -42,12 +42,13 @@ class DeeptracyDBEngine:
                 pass
 
     @contextmanager
-    def session_scope(self):
+    def session_scope(self, commit=True):
         session = self.Session()
         try:
             yield session
-            session.commit()
-        except:
+            if commit:
+                session.commit()
+        except:  # noqa
             session.rollback()
             raise
         finally:
