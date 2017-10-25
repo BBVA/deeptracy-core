@@ -31,23 +31,29 @@ class TestScanManager(BaseDeeptracyTest):
 
     def test_add_scan_invalid_project_id(self):
         with self.assertRaises(AssertionError):
-            scan_manager.add_scan(None, 'lang', self.mock_session)
-
-    def test_add_scan_invalid_lang(self):
-        with self.assertRaises(AssertionError):
-            scan_manager.add_scan('123', None, self.mock_session)
+            scan_manager.add_scan(None, self.mock_session)
 
     def test_add_scan_valid_scan(self):
         project_id = '123'
-        lang = 'lang'
-        scan_manager.add_scan(project_id, lang, self.mock_session)
+        scan_manager.add_scan(project_id, self.mock_session)
 
         assert self.mock_session.add.called
         kall = self.mock_session.add.call_args
         args, _ = kall
         scan = args[0]
         assert scan.project_id == project_id
-        assert scan.lang is lang
+
+    def test_add_scan_with_lang(self):
+        project_id = '123'
+        lang = 'nodejs'
+        scan_manager.add_scan(project_id, self.mock_session, lang=lang)
+
+        assert self.mock_session.add.called
+        kall = self.mock_session.add.call_args
+        args, _ = kall
+        scan = args[0]
+        assert scan.project_id == project_id
+        assert scan.lang == lang
 
     def test_get_scan_invalid_scan_id(self):
         with self.assertRaises(AssertionError):

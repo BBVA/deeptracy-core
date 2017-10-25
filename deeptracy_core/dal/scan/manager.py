@@ -25,10 +25,9 @@ class ScanState(Enum):
     NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
 
 
-def add_scan(project_id: str, lang: str, session: Session) -> Scan:
+def add_scan(project_id: str, session: Session, lang=None) -> Scan:
     """Adds a scan related to a project"""
     assert type(project_id) is str
-    assert type(lang) is str
 
     scan = Scan(project_id=project_id, lang=lang)
     session.add(scan)
