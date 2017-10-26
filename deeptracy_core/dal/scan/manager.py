@@ -23,6 +23,8 @@ class ScanState(Enum):
     DONE = 'DONE'
     INVALID_REPO = 'INVALID_REPO'
     NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
+    INVALID_YML_ON_PROJECT = 'INVALID_YML_ON_PROJECT'
+    CANT_GET_LANGUAGE = 'CANT_GET_LANGUAGE'
 
 
 def add_scan(project_id: str, session: Session, lang=None) -> Scan:
