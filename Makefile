@@ -17,45 +17,32 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 .PHONY: clean
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
-
-.PHONY: clean-build
-clean-build: ## remove build artifacts
+clean: ## remove all build, test, coverage and Python artifacts
 	rm -rf build dist .eggs .cache
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
-
-.PHONY: clean-pyc
-clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
-
-.PHONY: clean-test
-clean-test: ## remove test and coverage artifacts
 	rm -rf .tox .coverage htmlcov coverage-reports
 	find . -name '*,cover' -exec rm -fr {} +
 
 install-%:
 	pip install -r $*.txt -U
 
-.PHONY: test
-test: ## run tests quickly with the default Python
-	python -m unittest discover -s tests/unit
-	python -m pytest
-
-.PHONY: lint
-lint: ## check style with flake8
-	flake8
-
 .PHONY: install
 install: ## install package
 	pip install -U .
 
+.PHONY: test
+test: ## run tests quickly with the default Python
+	py.test tests
+
+.PHONY: lint
+lint: ## check style with flake8
+	flake8 deeptracy_core
+
 .PHONY: coverage
 coverage: ## install package
-	coverage run --source deeptracy_core -m unittest discover -s tests/unit
-	py.test --cov-report annotate --cov-append --cov=deeptracy_core tests/unit
-	coverage report -m
-	coverage xml -o coverage-reports/report.xml
+	py.test --cov=deeptracy_core tests --cov-fail-under 70
