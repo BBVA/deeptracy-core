@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, String, Integer, ForeignKey
+from datetime import datetime
+
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from deeptracy_core.utils import make_uuid
@@ -30,6 +32,7 @@ class Scan(Base):
     analysis_done = Column(Integer, default=0)
     state = Column(String, default='PENDING')
     source_path = Column(String)
+    created = Column(DateTime, default=datetime.now)
 
     scan_analysis = relationship('ScanAnalysis', lazy='subquery')
     scan_vulnerabilities = relationship('ScanVulnerability', lazy='subquery')
@@ -44,5 +47,6 @@ class Scan(Base):
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
-            'scan_analysis': self.scan_analysis
+            'scan_analysis': self.scan_analysis,
+            'created': self.created
         }

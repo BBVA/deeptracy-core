@@ -25,6 +25,7 @@ class ScanState(Enum):
     NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
     INVALID_YML_ON_PROJECT = 'INVALID_YML_ON_PROJECT'
     CANT_GET_LANGUAGE = 'CANT_GET_LANGUAGE'
+    SAME_DEPS_AS_PREVIOUS = 'SAME_DEPS_AS_PREVIOUS'
 
 
 def add_scan(project_id: str, session: Session, lang=None) -> Scan:
@@ -54,4 +55,24 @@ def update_scan_state(scan: Scan, state: ScanState, session: Session) -> Scan:
     return scan
 
 
-__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state')
+def get_previous_scan_for_project(project_id: str, scan_id: str, session: Session) -> bool:
+    """
+    Given a project and a scan id, return a the previous scan for the project
+
+    :param project_id:
+    :param scan_id:
+    :param session:
+    :return:
+    """
+    scan = get_scan(scan_id, session)
+
+    previous_scan = session.query(Scan) \
+        .filter(Scan.project_id == project_id) \
+        .filter(Scan.created < scan.created) \
+        .order_by(Scan.created.desc()) \
+        .first()
+
+    return previous_scan
+
+
+__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project')
