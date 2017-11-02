@@ -25,6 +25,7 @@ class ScanState(Enum):
     NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
     INVALID_YML_ON_PROJECT = 'INVALID_YML_ON_PROJECT'
     CANT_GET_LANGUAGE = 'CANT_GET_LANGUAGE'
+    SAME_DEPS_AS_PREVIOUS = 'SAME_DEPS_AS_PREVIOUS'
 
 
 def add_scan(project_id: str, session: Session, lang=None) -> Scan:
