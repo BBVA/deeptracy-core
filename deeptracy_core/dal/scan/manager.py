@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datetime import datetime, timedelta
 from enum import Enum
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.scan.model import Scan
@@ -73,6 +74,28 @@ def get_previous_scan_for_project(project_id: str, scan_id: str, session: Sessio
         .first()
 
     return previous_scan
+
+
+def get_num_scans_in_last_minutes(project_id: str, minutes: int, session: Session) -> int:
+    """
+    Return the number of scans ran in the last N minutes for a project
+
+    :param project_id:
+    :param minutes:
+    :param session:
+    :return:
+    """
+
+    assert type(project_id) is str
+    assert type(minutes) is int
+
+    from_time = datetime.now() - timedelta(minutes=minutes)
+    number = session.query(Scan) \
+        .filter(Scan.created > from_time) \
+        .filter(Scan.project_id == project_id) \
+        .count()
+
+    return number
 
 
 __all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project')

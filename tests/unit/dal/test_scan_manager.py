@@ -85,3 +85,12 @@ class TestScanManager(BaseDeeptracyTest):
         scan.state = scan_manager.ScanState.INVALID_REPO.name
         assert self.mock_session.add.called
         self.mock_session.add.assert_called_once_with(scan)
+
+    def test_can_add_scan_limited_by_time(self):
+        project_id = "testproject"
+        expected_scans = 2
+
+        self.mock_session.query().filter().filter().count.return_value = expected_scans
+
+        num_scans = scan_manager.get_num_scans_in_last_minutes(project_id, 60, self.mock_session)
+        self.assertEqual(expected_scans, num_scans)
