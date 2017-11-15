@@ -11,21 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from sqlalchemy import Column, String, ForeignKey
-
-from deeptracy_core.utils import make_uuid
-from deeptracy_core.dal.database import Base
-
-
-class ScanAnalysisVulnerability(Base):
-    """SQLAlchemy ScanAnalysisVulnerability model"""
-    __tablename__ = 'scan_analysis_vulnerability'
-
-    id = Column(String, primary_key=True, default=make_uuid)
-    scan_analysis_id = Column(String, ForeignKey('scan_analysis.id'))
-    library = Column(String)
-    version = Column(String)
-    severity = Column(String)
-    summary = Column(String)
-    advisory = Column(String)

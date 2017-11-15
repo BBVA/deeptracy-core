@@ -48,5 +48,7 @@ from .scan.model import Scan
 from .plugin.model import Plugin
 from .scan_dep.model import ScanDep
 from .scan_analysis.model import ScanAnalysis
-from .models import ScanAnalysisVulnerability, ScanVulnerability
+from .scan_vul.model import ScanVulnerability
+from .config.model import Config
+from .models import ScanAnalysisVulnerability
 from .plugin_results import *
