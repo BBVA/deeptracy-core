@@ -23,6 +23,7 @@ import enum
 class ProjectHookType(enum.Enum):
     NONE = 'NONE'
     SLACK = 'SLACK'
+    EMAIL = 'EMAIL'
 
 
 class ProjectHookData:
