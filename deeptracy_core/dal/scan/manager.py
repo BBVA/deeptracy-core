@@ -98,4 +98,20 @@ def get_num_scans_in_last_minutes(project_id: str, minutes: int, session: Sessio
     return number
 
 
-__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project')
+def get_scan_vulnerabilities(scan_id: str, session: Session):
+    """
+    Get scan vulnerabilities
+
+    :param scan_id: (str) scan id to asociate the dependency
+    :param session: (Session) database session to add objects
+    :return vulnerabilities: (Array) Array of ScanVulnerability
+    """
+
+    assert type(scan_id) is str
+    scan_vulnerabilities = get_scan(scan_id, session).scan_vulnerabilities
+
+    return scan_vulnerabilities
+
+
+__all__ = (
+'ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project', 'get_scan_vulnerabilities')
