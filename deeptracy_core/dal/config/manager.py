@@ -11,15 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from sqlalchemy.orm import Session
+
+from ..caching_query import FromCache
 from .model import Config
 
 
 def save_config(key: str, value: str, session: Session) -> Config:
     """Save or update a configuration"""
     assert type(key) is str
-    assert type(value) is str
 
     config = session.query(Config).get(key)
     if not config:
@@ -36,7 +36,7 @@ def get_config(key: str, session: Session) -> Config:
     """retrieve a configuration"""
     assert type(key) is str
 
-    config = session.query(Config).get(key)
+    config = session.query(Config).options(FromCache()).get(key)
 
     return None if not config else config.value
 
