@@ -29,10 +29,6 @@ class TestConfigManager(BaseDeeptracyTest):
         with self.assertRaises(AssertionError):
             config_manager.save_config(None, 'value', self.mock_session)
 
-    def test_save_config_invalid_value(self):
-        with self.assertRaises(AssertionError):
-            config_manager.save_config('key', None, self.mock_session)
-
     def test_save_config_valid(self):
         key = 'key'
         value = 'value'

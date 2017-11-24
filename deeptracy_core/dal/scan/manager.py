@@ -102,7 +102,11 @@ def get_num_scans_in_last_minutes(project_id: str, minutes: int, session: Sessio
     return number
 
 
-def can_create_scan(project_id: str, allowed_scans_per_perdiod: int, allowed_scans_check_period: int, session: Session):
+def can_create_scan(
+        project_id: str,
+        allowed_scans_per_perdiod: int,
+        allowed_scans_check_period: int,
+        session: Session):
     """
     Determines if a scan can be created for a given project
 
@@ -125,4 +129,10 @@ def can_create_scan(project_id: str, allowed_scans_per_perdiod: int, allowed_sca
     return allowed_scan
 
 
-__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project', 'can_create_scan')
+__all__ = (
+    'ScanState',
+    'add_scan',
+    'get_scan',
+    'update_scan_state',
+    'get_previous_scan_for_project',
+    'can_create_scan')
