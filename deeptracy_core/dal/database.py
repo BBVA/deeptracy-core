@@ -12,24 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Provides the sqlalchemy engine."""
+"""Provides the sqlalchemy engine.
+
+Dogpile.cache is used to create a cache layer for the engine.
+"""
+
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
-from contextlib import contextmanager
-
 from sqlalchemy.ext.declarative import declarative_base
-from deeptracy_core.config import DATABASE_URI
+from contextlib import contextmanager
+from dogpile.cache import make_region
+
+from ..config import DATABASE_URI
+from . import caching_query
 
 
 class DeeptracyDBEngine:
 
     engine = None
     Session = None
+    regions = {}  # dogpile cache regions.  A home base for cache configurations.
 
     def init_engine(self, db_uri=None):
         self.engine = sqlalchemy.create_engine(db_uri or DATABASE_URI)
-        self.Session = sessionmaker(bind=self.engine)
+        self.create_cache_regions()
+        self.Session = sessionmaker(
+            bind=self.engine,
+            query_cls=caching_query.query_callable(self.regions)
+        )
 
         if not database_exists(db.engine.url):
             try:
@@ -40,6 +51,15 @@ class DeeptracyDBEngine:
             except Exception as e:
                 print(e)
                 pass
+
+    def create_cache_regions(self):
+        # configure the "default" cache region.
+        self.regions['default'] = make_region(
+            key_mangler=caching_query.md5_key_mangler
+        ).configure(
+            'dogpile.cache.memory_pickle',
+            expiration_time=3600
+        )
 
     @contextmanager
     def session_scope(self, commit=True):
