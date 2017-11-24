@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from datetime import datetime, timedelta
 from enum import Enum
 from sqlalchemy.orm import Session
 from deeptracy_core.dal.scan.model import Scan
+
+logger = logging.getLogger('deeptracy')
 
 
 class ScanState(Enum):
@@ -98,4 +102,27 @@ def get_num_scans_in_last_minutes(project_id: str, minutes: int, session: Sessio
     return number
 
 
-__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project')
+def can_create_scan(project_id: str, allowed_scans_per_perdiod: int, allowed_scans_check_period: int, session: Session):
+    """
+    Determines if a scan can be created for a given project
+
+    Uses values from the config in the database:
+    ALLOWED_SCANS_PER_PERIOD
+    ALLOWED_SCANS_CHECK_PERIOD
+
+    :param project_id: (str) project to check if a scan can be created
+    :param allowed_scans_per_perdiod: (int)
+    :param allowed_scans_check_period: (int)
+    :param session: (Session)
+    :return: True if a scan can be created, else False
+    """
+    logger.debug(' allowed scans per period {}/{}'.format(allowed_scans_per_perdiod, allowed_scans_check_period))
+    allowed_scan = True
+    if allowed_scans_per_perdiod > 0:
+        previous_scans = get_num_scans_in_last_minutes(project_id, allowed_scans_check_period, session)
+        allowed_scan = previous_scans < allowed_scans_per_perdiod
+
+    return allowed_scan
+
+
+__all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project', 'can_create_scan')
