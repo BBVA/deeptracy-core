@@ -158,10 +158,11 @@ def get_projects(session: Session) -> Project:
 
 
 def update_project(
-        id: str, session: Session,
+        id: str,
+        session: Session,
         repo_auth_type: str=None,
         hook_type: str=None,
-        hook_data: str=None,
+        hook_data: dict=None,
         **kwargs) -> Project:
     """Update a project data on the database
 
@@ -204,7 +205,8 @@ def update_project(
         assert 'webhook_url' in hook_data
         update_dict['hook_data'] = json.dumps(hook_data)
 
-    session.query(Project).filter(Project.id == id).update(update_dict)
+    _filter = session.query(Project).filter(Project.id == id)
+    _filter.update(update_dict)
     return get_project(id, session)
 
 
