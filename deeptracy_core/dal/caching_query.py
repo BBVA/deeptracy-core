@@ -97,7 +97,7 @@ class CachingQuery(Query):
         dogpile_region.delete(cache_key)
 
     def get_value(self, merge=True, createfunc=None,
-                    expiration_time=None, ignore_expiration=False):
+                  expiration_time=None, ignore_expiration=False):
         """Return the value from the cache for this query.
 
         Raise KeyError if no value present and no
@@ -111,12 +111,12 @@ class CachingQuery(Query):
         # with createfunc, which says, if the value is expired, generate
         # a new value.
         assert not ignore_expiration or not createfunc, \
-                "Can't ignore expiration and also provide createfunc"
+            "Can't ignore expiration and also provide createfunc"
 
         if ignore_expiration or not createfunc:
             cached_value = dogpile_region.get(cache_key,
-                                expiration_time=expiration_time,
-                                ignore_expiration=ignore_expiration)
+                                              expiration_time=expiration_time,
+                                              ignore_expiration=ignore_expiration)
         else:
             cached_value = dogpile_region.get_or_create(
                                     cache_key,
