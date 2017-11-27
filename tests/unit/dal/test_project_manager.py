@@ -33,6 +33,7 @@ class TestProjectManager(BaseDeeptracyTest):
         """Mock the database engine for all tests"""
         project_manager.db = MockDeeptracyDBEngine()
         cls.db = project_manager.db
+        cls.test_projects = [Project(id='123', name='name', repo='repo'), Project(id='456', name='name', repo='repo')]
 
     def setUp(self):
         self.db.Session.query._ret_val = None
@@ -47,11 +48,12 @@ class TestProjectManager(BaseDeeptracyTest):
 
     def test_get_project_found(self):
         # mock the return value
-        self.db.Session.query._ret_val = Project(id='123', repo='repo')
+        self.db.Session.query._ret_val = self.test_projects[0]
 
-        project = project_manager.get_project('123', self.db.Session())
+        project = project_manager.get_project(self.test_projects[0].id, self.db.Session())
         assert project is not None
         assert project.repo == 'repo'
+        assert project.name == 'name'
 
     def test_get_projects_with_empty_table(self):
         # mock the return value
@@ -62,30 +64,40 @@ class TestProjectManager(BaseDeeptracyTest):
 
     def test_get_projects_when_only_one_on_db(self):
         # mock the return value
-        self.db.Session.query._ret_val = [Project(id='123', repo='repo')]
+        self.db.Session.query._ret_val = [self.test_projects[0]]
 
         projects = project_manager.get_projects(self.db.Session())
-        assert projects is not [Project(id='123', repo='repo')]
+        assert projects is not [self.test_projects[0]]
 
     def test_get_projects_when_more_than_one_on_db(self):
         # mock the return value
-        self.db.Session.query._ret_val = [Project(id='123', repo='repo'), Project(id='456', repo='repo')]
+        self.db.Session.query._ret_val = self.test_projects
 
         projects = project_manager.get_projects(self.db.Session())
-        assert projects is not [Project(id='123', repo='repo'), Project(id='456', repo='repo')]
+        assert projects is not self.test_projects
 
     def test_add_project_valid_repo(self):
         repo_url = 'http://repo.com'
+        name = 'name'
         session = MagicMock()
-        project = project_manager.add_project(repo_url, session)
+        project = project_manager.add_project(repo_url, name, session)
         assert isinstance(project, Project)
         assert project.repo == repo_url
         assert session.add.called
 
     def test_add_project_missing_repo(self):
         session = MagicMock()
+        name = 'name'
         with self.assertRaises(AssertionError):
-            project_manager.add_project(None, session)
+            project_manager.add_project(None, name, session)
+
+        assert not session.add.called
+
+    def test_add_project_missing_name(self):
+        session = MagicMock()
+        repo_url = 'http://repo.com'
+        with self.assertRaises(AssertionError):
+            project_manager.add_project(repo_url, None, session)
 
         assert not session.add.called
 
@@ -99,10 +111,12 @@ class TestProjectManager(BaseDeeptracyTest):
             }
         }
         repo_url = 'http://repo.com'
-        project = project_manager.add_project(repo_url, session, **data)
+        name = 'name'
+        project = project_manager.add_project(repo_url, name, session, **data)
 
         assert isinstance(project, Project)
         assert project.repo == repo_url
+        assert project.name == name
         assert project.hook_type == ProjectHookType.SLACK.name
 
         assert json.loads(project.hook_data) == {"webhook_url": "test_webhook"}
