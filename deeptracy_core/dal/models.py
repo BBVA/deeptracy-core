@@ -42,3 +42,14 @@ class ScanVulnerability(Base):
     severity = Column(String)
     summary = Column(String)
     advisory = Column(String)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'scan_id': self.scan_id,
+            'library': self.library,
+            'version': self.version,
+            'severity': self.severity,
+            'summary': self.summary,
+            'advisory': self.advisory
+        }
