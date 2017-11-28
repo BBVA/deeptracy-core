@@ -29,4 +29,3 @@ class ScanAnalysisVulnerability(Base):
     severity = Column(String)
     summary = Column(String)
     advisory = Column(String)
-

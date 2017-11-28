@@ -152,4 +152,3 @@ def get_scan_vulnerabilities(scan_id: str, session: Session):
 
 __all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project',
            'can_create_scan', 'get_scan_vulnerabilities')
-
