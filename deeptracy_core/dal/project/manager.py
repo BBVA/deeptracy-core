@@ -27,7 +27,9 @@ log = logging.getLogger(__name__)
 
 
 def add_project(
-        repo: str, session: Session,
+        repo: str,
+        name: str,
+        session: Session,
         repo_auth_type: str=RepoAuthType.PUBLIC.name,
         hook_type: str= ProjectHookType.NONE.name,
         hook_data: dict=None,
@@ -37,6 +39,7 @@ def add_project(
     If the project has a RepoAuth that needs to be saved, the contents are encoded before saving them
 
     :param repo: (str) Id of the project
+    :param name: (str) Name of the project
     :param session: (Session) Database session
     :param repo_auth_type: (str, optional) Repo authentication type
     :param hook_type: (ProjectHookType, optional) Project notification hook type
@@ -47,6 +50,7 @@ def add_project(
     :raises AssertionError: On missing repo
     """
     assert type(repo) is str
+    assert type(name) is str
     assert type(repo_auth_type) is str
     assert type(hook_type) is str
 
@@ -77,6 +81,7 @@ def add_project(
     # build the project object to persist in session
     project = Project(
         repo=repo,
+        name=name,
         **repo_auth,
         **hooks
     )

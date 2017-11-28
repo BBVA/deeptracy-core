@@ -17,10 +17,9 @@ import json
 import deeptracy_core.dal.project.manager as project_manager
 from unittest.mock import MagicMock, patch
 from deeptracy_core.dal.project.model import Project
-from deeptracy_core.dal.project.repo_auth import RepoAuth, RepoAuthType
+from deeptracy_core.dal.project.repo_auth import RepoAuthType
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
 from tests.unit.base_test import BaseDeeptracyTest
-from tests.unit.mock_db import MockDeeptracyDBEngine
 
 
 class TestProjectManager(BaseDeeptracyTest):
@@ -29,8 +28,11 @@ class TestProjectManager(BaseDeeptracyTest):
     @classmethod
     def setUpClass(cls):
         """Mock the database engine for all tests"""
-        project_manager.db = MockDeeptracyDBEngine()
         cls.mock_session = MagicMock()
+        cls.test_name = 'name'
+        cls.test_repo = 'http://repo.com'
+        cls.test_projects = [Project(id='123', name=cls.test_name, repo=cls.test_repo),
+                             Project(id='456', name=cls.test_name, repo=cls.test_repo)]
 
     def test_get_project_invalid_id(self):
         with self.assertRaises(ValueError):
@@ -42,15 +44,14 @@ class TestProjectManager(BaseDeeptracyTest):
             project_manager.get_project('123', self.mock_session)
 
     def test_get_project_found(self):
-        self.mock_session.query().get.return_value = Project(id='123', repo='repo')
-
-        project = project_manager.get_project('123', self.mock_session)
+        self.mock_session.query().get.return_value = self.test_projects[0]
+        project = project_manager.get_project(self.test_projects[0].id, self.mock_session)
         assert project is not None
-        assert project.repo == 'repo'
+        assert project.repo == self.test_repo
+        assert project.name == self.test_name
 
     def test_get_projects_with_empty_table(self):
-        self.mock_session.query().all.return_value = None
-
+        self.mock_session.query().all.return_value = []
         projects = project_manager.get_projects(self.mock_session)
         assert projects == []
 
@@ -68,15 +69,21 @@ class TestProjectManager(BaseDeeptracyTest):
         assert projects == projects_exepected
 
     def test_add_project_valid_repo(self):
-        repo_url = 'http://repo.com'
-        project = project_manager.add_project(repo_url, self.mock_session)
+        project = project_manager.add_project(self.test_repo, self.test_name, self.mock_session)
         assert isinstance(project, Project)
-        assert project.repo == repo_url
+        assert project.repo == self.test_repo
+        assert project.name == self.test_name
         assert self.mock_session.add.called
 
     def test_add_project_missing_repo(self):
         with self.assertRaises(AssertionError):
-            project_manager.add_project(None, self.mock_session)
+            project_manager.add_project(None, self.test_name, self.mock_session)
+
+        assert not self.mock_session.add.called
+
+    def test_add_project_missing_name(self):
+        with self.assertRaises(AssertionError):
+            project_manager.add_project(self.test_repo, None, self.mock_session)
 
         assert not self.mock_session.add.called
 
@@ -88,11 +95,11 @@ class TestProjectManager(BaseDeeptracyTest):
                 'webhook_url': 'test_webhook'
             }
         }
-        repo_url = 'http://repo.com'
-        project = project_manager.add_project(repo_url, self.mock_session, **data)
+        project = project_manager.add_project(self.test_repo, self.test_name, self.mock_session, **data)
 
         assert isinstance(project, Project)
-        assert project.repo == repo_url
+        assert project.repo == self.test_repo
+        assert project.name == self.test_name
         assert project.hook_type == ProjectHookType.SLACK.name
 
         assert json.loads(project.hook_data) == {"webhook_url": "test_webhook"}
@@ -107,7 +114,7 @@ class TestProjectManager(BaseDeeptracyTest):
             }
         }
 
-        project = project_manager.add_project('http://repo.com', self.mock_session, **data)
+        project = project_manager.add_project(self.test_repo, self.test_name, self.mock_session, **data)
 
         assert project.hook_type == ProjectHookType.EMAIL.name
 
@@ -124,7 +131,7 @@ class TestProjectManager(BaseDeeptracyTest):
         }
 
         with self.assertRaises(AssertionError):
-            project_manager.add_project('http://repo.com', self.mock_session, **data)
+            project_manager.add_project(self.test_repo, self.test_name, self.mock_session, **data)
 
     def test_update_project_invalid_auth_type(self):
         with self.assertRaises(AssertionError):

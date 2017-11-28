@@ -94,3 +94,12 @@ class TestScanManager(BaseDeeptracyTest):
 
         num_scans = scan_manager.get_num_scans_in_last_minutes(project_id, 60, self.mock_session)
         self.assertEqual(expected_scans, num_scans)
+
+    def test_get_scan_vulnerabilites(self):
+        scan_id = '123'
+        query = MagicMock()
+        self.mock_session.query.return_value = query
+
+        scan_manager.get_scan_vulnerabilities(scan_id, self.mock_session)
+        assert query.get.called
+        query.get.assert_called_once_with(scan_id)
