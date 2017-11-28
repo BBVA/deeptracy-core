@@ -28,7 +28,7 @@ class Project(Base):
     __tablename__ = 'project'
 
     id = Column(String, primary_key=True, default=make_uuid)
-    name = Column(String, default='')
+    name = Column(String, nullable=False)
     repo = Column(String, unique=True, nullable=False)
     repo_auth_type = Column(String, default=RepoAuthType.PUBLIC.name)
     repo_auth = Column(String, default='')  # Auth is saved as a base64 string that represents a RepoAuth object
