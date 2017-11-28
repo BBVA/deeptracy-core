@@ -80,7 +80,7 @@ class TestProjectManager(BaseDeeptracyTest):
 
         assert not self.mock_session.add.called
 
-    def test_add_project_with_hooks_in_kwargs(self):
+    def test_add_project_with_hook_slack_in_kwargs(self):
         data = {
             'repo_auth_type': RepoAuthType.PUBLIC.name,
             'hook_type': ProjectHookType.SLACK.name,
@@ -97,6 +97,34 @@ class TestProjectManager(BaseDeeptracyTest):
 
         assert json.loads(project.hook_data) == {"webhook_url": "test_webhook"}
         assert self.mock_session.add.called
+
+    def test_add_project_with_hook_email_in_kwargs(self):
+        data = {
+            'repo_auth_type': RepoAuthType.PUBLIC.name,
+            'hook_type': ProjectHookType.EMAIL.name,
+            'hook_data': {
+                'email': 'mail@mail.com'
+            }
+        }
+
+        project = project_manager.add_project('http://repo.com', self.mock_session, **data)
+
+        assert project.hook_type == ProjectHookType.EMAIL.name
+
+        assert json.loads(project.hook_data) == {"email": "mail@mail.com"}
+        assert self.mock_session.add.called
+
+    def test_add_project_with_invalid_hook_email_in_kwargs(self):
+        data = {
+            'repo_auth_type': RepoAuthType.PUBLIC.name,
+            'hook_type': ProjectHookType.EMAIL.name,
+            'hook_data': {
+                'invalid': 'mail@mail.com'
+            }
+        }
+
+        with self.assertRaises(AssertionError):
+            project_manager.add_project('http://repo.com', self.mock_session, **data)
 
     def test_update_project_invalid_auth_type(self):
         with self.assertRaises(AssertionError):
@@ -161,4 +189,23 @@ class TestProjectManager(BaseDeeptracyTest):
             'repo_auth_type': RepoAuthType.PUBLIC.name,
             'hook_type': ProjectHookType.SLACK.name,
             'hook_data': '{"webhook_url": "http://myslack.com"}'
+        })
+
+    @patch('deeptracy_core.dal.project.manager.get_project')
+    def test_update_project_valid_hook_email(self, mock_get_project):
+        mock_update = MagicMock()
+        self.mock_session.query().filter().update = mock_update
+
+        project_manager.update_project(
+            '123',
+            self.mock_session,
+            repo_auth_type=RepoAuthType.PUBLIC.name,
+            hook_type=ProjectHookType.EMAIL.name,
+            hook_data={'email': 'mail@mail.com'})
+
+        assert mock_update.called
+        mock_update.assert_called_once_with({
+            'repo_auth_type': RepoAuthType.PUBLIC.name,
+            'hook_type': ProjectHookType.EMAIL.name,
+            'hook_data': '{"email": "mail@mail.com"}'
         })

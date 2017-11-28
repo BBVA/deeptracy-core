@@ -69,6 +69,10 @@ def add_project(
         assert type(hook_data) is dict
         assert 'webhook_url' in hook_data
         hooks['hook_data'] = json.dumps(hook_data)
+    elif hook_type == ProjectHookType.EMAIL.name:
+        assert type(hook_data) is dict
+        assert 'email' in hook_data
+        hooks['hook_data'] = json.dumps(hook_data)
 
     # build the project object to persist in session
     project = Project(
@@ -200,10 +204,15 @@ def update_project(
 
         update_dict['hook_type'] = hook_type
 
-    if hook_data is not None:
-        assert type(hook_data) is dict
-        assert 'webhook_url' in hook_data
-        update_dict['hook_data'] = json.dumps(hook_data)
+        if hook_data is not None:
+            assert type(hook_data) is dict
+
+            if hook_type == ProjectHookType.SLACK.name:
+                assert 'webhook_url' in hook_data
+            elif hook_type == ProjectHookType.EMAIL.name:
+                assert 'email' in hook_data
+
+            update_dict['hook_data'] = json.dumps(hook_data)
 
     _filter = session.query(Project).filter(Project.id == id)
     _filter.update(update_dict)
