@@ -110,11 +110,8 @@ def get_scan_vulnerabilities(scan_id: str, session: Session):
     assert type(scan_id) is str
     scan = session.query(Scan).get(scan_id)
     if scan is None:
-        error = 'Scan {0} not found in database'.format(scan_id)
-        raise Exception(error)
-    scan_vulnerabilities = scan.scan_vulnerabilities
-
-    return scan_vulnerabilities
+        raise AssertionError('Scan {} not found in database'.format(scan_id))
+    return scan.scan_vulnerabilities
 
 
 __all__ = ('ScanState', 'add_scan', 'get_scan', 'update_scan_state', 'get_previous_scan_for_project',

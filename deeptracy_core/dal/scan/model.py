@@ -16,6 +16,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.event import listens_for
 
 from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
@@ -33,7 +34,10 @@ class Scan(Base):
     state = Column(String, default='PENDING')
     source_path = Column(String)
     created = Column(DateTime, default=datetime.now)
+    total_packages = Column(Integer, default=0)
+    total_vulnerabilities = Column(Integer, default=0)
 
+    scan_deps = relationship('ScanDep', lazy='subquery')
     scan_analysis = relationship('ScanAnalysis', lazy='subquery')
     scan_vulnerabilities = relationship('ScanVulnerability', lazy='subquery')
 
@@ -47,6 +51,16 @@ class Scan(Base):
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
+            'scan_deps': self.scan_deps,
             'scan_analysis': self.scan_analysis,
-            'created': self.created
+            'created': self.created,
+            'total_packages': self.total_packages,
+            'total_vulnerabilities': self.total_vulnerabilities
         }
+
+
+@listens_for(Scan.state, 'set')
+def calc_total_packages(target, value, oldvalue, initiator):
+    if value == 'DONE':
+        target.total_vulnerabilities = len(target.scan_vulnerabilities)
+        target.total_packages = len(target.scan_deps)
