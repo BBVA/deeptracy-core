@@ -34,14 +34,14 @@ def add_scan_vulnerabilities_results(scan_analysis_id: str, vulnerabilities: Lis
     assert type(scan_analysis_id) is str
 
     for plugin_result in vulnerabilities:
-        scan_analaysis_vul = ScanAnalysisVulnerability(
+        scan_analysis_vul = ScanAnalysisVulnerability(
                                 scan_analysis_id=scan_analysis_id,
                                 library=plugin_result.library,
                                 version=plugin_result.version,
                                 severity=plugin_result.severity,
                                 summary=plugin_result.summary,
                                 advisory=plugin_result.advisory)
-        session.add(scan_analaysis_vul)
+        session.add(scan_analysis_vul)
 
 
 def add_scan_analysis(scan_id: str, plugin_id: str, session: Session) -> ScanAnalysis:
