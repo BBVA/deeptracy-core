@@ -23,17 +23,18 @@ class ScanState(Enum):
     RUNNING = 'RUNNING'
     DONE = 'DONE'
     INVALID_REPO = 'INVALID_REPO'
+    INVALID_BRANCH = 'INVALID BRANCH'
     NO_PLUGINS_FOR_LANGUAGE = 'NO_PLUGINS_FOR_LANGUAGE'
     INVALID_YML_ON_PROJECT = 'INVALID_YML_ON_PROJECT'
     CANT_GET_LANGUAGE = 'CANT_GET_LANGUAGE'
     SAME_DEPS_AS_PREVIOUS = 'SAME_DEPS_AS_PREVIOUS'
 
 
-def add_scan(project_id: str, session: Session, lang=None) -> Scan:
+def add_scan(project_id: str, session: Session, lang=None, branch=None) -> Scan:
     """Adds a scan related to a project"""
     assert type(project_id) is str
 
-    scan = Scan(project_id=project_id, lang=lang)
+    scan = Scan(project_id=project_id, lang=lang, branch=branch)
     session.add(scan)
     return scan
 

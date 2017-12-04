@@ -29,6 +29,7 @@ class Scan(Base):
     id = Column(String, primary_key=True, default=make_uuid)
     project_id = Column(String, ForeignKey('project.id'))
     lang = Column(String)
+    branch = Column(String, default='master')
     analysis_count = Column(Integer, default=0)
     analysis_done = Column(Integer, default=0)
     state = Column(String, default='PENDING')
@@ -37,7 +38,6 @@ class Scan(Base):
     total_packages = Column(Integer, default=0)
     total_vulnerabilities = Column(Integer, default=0)
 
-    scan_deps = relationship('ScanDep', lazy='subquery')
     scan_analysis = relationship('ScanAnalysis', lazy='subquery')
     scan_vulnerabilities = relationship('ScanVulnerability', lazy='subquery')
 
@@ -48,19 +48,12 @@ class Scan(Base):
             'id': self.id,
             'project_id': self.project_id,
             'lang': self.lang,
+            'branch': self.branch,
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
-            'scan_deps': self.scan_deps,
             'scan_analysis': self.scan_analysis,
             'created': self.created,
             'total_packages': self.total_packages,
             'total_vulnerabilities': self.total_vulnerabilities
         }
-
-
-@listens_for(Scan.state, 'set')
-def calc_total_packages(target, value, oldvalue, initiator):
-    if value == 'DONE':
-        target.total_vulnerabilities = len(target.scan_vulnerabilities)
-        target.total_packages = len(target.scan_deps)
