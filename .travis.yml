@@ -17,3 +17,8 @@ deploy:
     script: deploy/pypi.sh
     on:
       branch: master
+
+  - provider: script
+    script: deploy/pypi_dev.sh
+    on:
+      branch: develop
