@@ -162,6 +162,19 @@ def get_projects(session: Session) -> Project:
     return projects
 
 
+def get_projects_by_name_term(term: str, limit: int, session: Session) -> Project:
+    """Get project by Name Term
+    :param term: (str) Term to search in project names
+    :param limit: (int) Number the project to return
+    :param session: (Session) Database session
+
+    :rtype: Project Array
+    """
+    search_term = '%{}%'.format(term)
+    projects = session.query(Project).filter(Project.name.like(search_term)).limit(limit)
+    return projects
+
+
 def update_project(
         id: str, session: Session,
         repo_auth_type: str=None,
@@ -213,4 +226,5 @@ def update_project(
     return get_project(id, session)
 
 
-__all__ = ('add_project', 'delete_project', 'delete_projects', 'get_project', 'get_projects', 'update_project')
+__all__ = ('add_project', 'delete_project', 'delete_projects', 'get_project', 'get_projects', 'update_project',
+           'get_projects_by_name_term')

@@ -79,6 +79,13 @@ class TestProjectManager(BaseDeeptracyTest):
         projects = project_manager.get_projects(self.db.Session())
         assert projects is not self.test_projects
 
+    def test_get_projects_when_searching_by_term_in_names(self):
+        # mock the return value
+        self.db.Session.query.filter._ret_val = self.test_projects
+
+        projects = project_manager.get_projects_by_name_term('na', 5, self.db.Session())
+        assert projects is not self.test_projects
+
     def test_add_project_valid_repo(self):
         session = MagicMock()
         project = project_manager.add_project(self.test_repo, self.test_name, session)

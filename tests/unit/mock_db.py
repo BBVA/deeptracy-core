@@ -13,8 +13,19 @@
 # limitations under the License.
 
 
+class MockFilter:
+    _ret_val = None
+
+    def __init__(self, model):
+        self._model = model
+
+    def limit(self, limit):
+        return self._ret_val[:limit]
+
+
 class MockQuery:
     _ret_val = None
+    filter = MockFilter
 
     def __init__(self, model):
         self._model = model
