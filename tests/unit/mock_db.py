@@ -23,6 +23,16 @@ class MockFilter:
         return self._ret_val[:limit]
 
 
+class MockAll:
+    _ret_val = None
+
+    def __init__(self, model):
+        self._model = model
+
+    def count(self):
+        return len(self._ret_val)
+
+
 class MockQuery:
     _ret_val = None
     filter = MockFilter
@@ -38,6 +48,9 @@ class MockQuery:
 
     def update(self, condition):
         return self.condition
+
+    def count(self):
+        return len(self._ret_val)
 
 
 class MockSession:

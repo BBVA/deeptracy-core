@@ -162,6 +162,10 @@ def get_projects(session: Session) -> Project:
     return projects
 
 
+def get_projects_count(session: Session) -> int:
+    return session.query(Project).count()
+
+
 def get_projects_by_name_term(term: str, limit: int, session: Session) -> Project:
     """Get project by Name Term
     :param term: (str) Term to search in project names
@@ -171,7 +175,7 @@ def get_projects_by_name_term(term: str, limit: int, session: Session) -> Projec
     :rtype: Project Array
     """
     search_term = '%{}%'.format(term)
-    projects = session.query(Project).filter(Project.name.like(search_term)).limit(limit)
+    projects = session.query(Project).filter(Project.name.ilike(search_term)).limit(limit)
     return projects
 
 
