@@ -162,6 +162,10 @@ def get_projects(session: Session) -> Project:
     return projects
 
 
+def get_projects_count(session: Session) -> int:
+    return session.query(Project).count()
+
+
 def get_projects_by_name_term(term: str, limit: int, session: Session) -> Project:
     """Get project by Name Term
     :param term: (str) Term to search in project names

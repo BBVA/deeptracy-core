@@ -84,7 +84,13 @@ class TestProjectManager(BaseDeeptracyTest):
         self.db.Session.query.filter._ret_val = self.test_projects
 
         projects = project_manager.get_projects_by_name_term('na', 5, self.db.Session())
-        assert projects is not self.test_projects
+        assert projects == self.test_projects
+
+    def test_get_projects_count(self):
+        self.db.Session.query._ret_val = self.test_projects
+        count = project_manager.get_projects_count(self.db.Session())
+
+        assert count is len(self.test_projects)
 
     def test_add_project_valid_repo(self):
         session = MagicMock()
