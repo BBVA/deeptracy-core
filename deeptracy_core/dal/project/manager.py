@@ -171,7 +171,7 @@ def get_projects_by_name_term(term: str, limit: int, session: Session) -> Projec
     :rtype: Project Array
     """
     search_term = '%{}%'.format(term)
-    projects = session.query(Project).filter(Project.name.like(search_term)).limit(limit)
+    projects = session.query(Project).filter(Project.name.ilike(search_term)).limit(limit)
     return projects
 
 
