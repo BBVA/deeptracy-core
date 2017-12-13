@@ -52,7 +52,6 @@ class Scan(Base):
             'analysis_count': self.analysis_count,
             'analysis_done': self.analysis_done,
             'state': self.state,
-            'scan_analysis': self.scan_analysis,
             'created': self.created,
             'total_packages': self.total_packages,
             'total_vulnerabilities': self.total_vulnerabilities
