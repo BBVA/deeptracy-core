@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, String, Float, ForeignKey, Sequence
+from sqlalchemy import Column, String, Float, Sequence, ForeignKey
 from sqlalchemy.orm import relationship
 
 from deeptracy_core.dal.database import Base
@@ -20,34 +20,23 @@ from deeptracy_core.dal.database import Base
 TABLE_ID = Sequence('table_id_seq', start=1)
 
 
-class Vulnerability(Base):
+class ScanVulnerability(Base):
     """SQLAlchemy ScanVulnerability model"""
-    __tablename__ = 'vulnerability'
+    __tablename__ = 'scan_vulnerability'
 
     id = Column(String, TABLE_ID, primary_key=True, server_default=TABLE_ID.next_value())
-    scan_vulnerability_id = Column(String, ForeignKey('scan_vulnerability.id'))
-    cpe = Column(String)
-    cve = Column(String)
-    patton_id = Column(String)
-    ref_type = Column(String)
-    href = Column(String)
-    prod_title = Column(String)
-    score = Column(Float)
-    access_vector = Column(String)
-    source = Column(String)
+    scan_id = Column(String, ForeignKey('scan.id'))
+    library = Column(String)
+    version = Column(String)
+    max_score = Column(Float, default=0)
 
-    scan_vulnerability = relationship('ScanVulnerability', lazy='subquery')
+    scan = relationship('Scan', lazy='subquery')
 
     def to_dict(self):
         return {
             'id': self.id,
-            'cpe': self.cpe,
-            'cve': self.cve,
-            'patton_id': self.patton_id,
-            'ref_type': self.ref_type,
-            'href': self.href,
-            'prod_title': self.prod_title,
-            'score': self.score,
-            'access_vector': self.access_vector,
-            'source': self.source
+            'scan_id': self.scan_id,
+            'library': self.library,
+            'version': self.version,
+            'max_score': self.max_score
         }

@@ -35,7 +35,8 @@ class Scan(Base):
     total_packages = Column(Integer, default=0)
     total_vulnerabilities = Column(Integer, default=0)
 
-    scan_vulnerabilities = relationship('ScanVulnerability', lazy='subquery')
+    scan_dependencies = relationship('ScanDep')
+    scan_vulnerabilities = relationship('ScanVulnerability')
 
     project = relationship('Project', lazy='subquery')
 
