@@ -12,44 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, Float, ForeignKey, Sequence
+from sqlalchemy.orm import relationship
 
-from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
 
-
-class ScanAnalysisVulnerability(Base):
-    """SQLAlchemy ScanAnalysisVulnerability model"""
-    __tablename__ = 'scan_analysis_vulnerability'
-
-    id = Column(String, primary_key=True, default=make_uuid)
-    scan_analysis_id = Column(String, ForeignKey('scan_analysis.id'))
-    library = Column(String)
-    version = Column(String)
-    severity = Column(String)
-    summary = Column(String)
-    advisory = Column(String)
+TABLE_ID = Sequence('table_id_seq', start=1)
 
 
-class ScanVulnerability(Base):
+class Vulnerability(Base):
     """SQLAlchemy ScanVulnerability model"""
-    __tablename__ = 'scan_vulnerability'
+    __tablename__ = 'vulnerability'
 
-    id = Column(String, primary_key=True, default=make_uuid)
-    scan_id = Column(String, ForeignKey('scan.id'))
-    library = Column(String)
-    version = Column(String)
-    severity = Column(String)
-    summary = Column(String)
-    advisory = Column(String)
+    id = Column(String, TABLE_ID, primary_key=True, server_default=TABLE_ID.next_value())
+    scan_vulnerability_id = Column(String, ForeignKey('scan_vulnerability.id'))
+    cpe = Column(String)
+    cve = Column(String)
+    patton_id = Column(String)
+    ref_type = Column(String)
+    href = Column(String)
+    prod_title = Column(String)
+    score = Column(Float)
+    access_vector = Column(String)
+    source = Column(String)
+
+    scan_vulnerability = relationship('ScanVulnerability', lazy='subquery')
 
     def to_dict(self):
         return {
             'id': self.id,
-            'scan_id': self.scan_id,
-            'library': self.library,
-            'version': self.version,
-            'severity': self.severity,
-            'summary': self.summary,
-            'advisory': self.advisory
+            'cpe': self.cpe,
+            'cve': self.cve,
+            'patton_id': self.patton_id,
+            'ref_type': self.ref_type,
+            'href': self.href,
+            'prod_title': self.prod_title,
+            'score': self.score,
+            'access_vector': self.access_vector,
+            'source': self.source
         }

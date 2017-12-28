@@ -88,4 +88,17 @@ def compare_scan_deps(scan_id: str, compare_scan_id: str, session: Session) -> b
     return len(diff) == 0
 
 
-__all__ = ('add_scan_dep', 'add_scan_deps', 'compare_scan_deps')
+def get_scan_deps(scan_id: str, session: Session) -> ScanDep:
+    """
+    Given a scans id, return the dependencies for the scan
+
+    :param scan_id: (str) scan id to check
+    :param session: (Session) database session to add objects
+
+    :rtype: ScanDep
+    :raises ValueError: On invalid project_id or in not found Project
+    """
+    return session.query(ScanDep).filter(ScanDep.scan_id == scan_id).all()
+
+
+__all__ = ('add_scan_dep', 'add_scan_deps', 'compare_scan_deps', 'get_scan_deps')
