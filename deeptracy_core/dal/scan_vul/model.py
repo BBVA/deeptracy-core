@@ -12,22 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, Float, Sequence, ForeignKey
 from sqlalchemy.orm import relationship
 
-from deeptracy_core.utils import make_uuid
 from deeptracy_core.dal.database import Base
 
+TABLE_ID = Sequence('table_id_seq', start=1)
 
-class ScanAnalysis(Base):
-    """SQLAlchemy ScanAnalysis model"""
-    __tablename__ = 'scan_analysis'
 
-    id = Column(String, primary_key=True, default=make_uuid)
+class ScanVulnerability(Base):
+    """SQLAlchemy ScanVulnerability model"""
+    __tablename__ = 'scan_vulnerability'
+
+    id = Column(String, TABLE_ID, primary_key=True, server_default=TABLE_ID.next_value())
     scan_id = Column(String, ForeignKey('scan.id'))
-    plugin_id = Column(String, ForeignKey('plugin.id'))
-    state = Column(String)
+    library = Column(String)
+    version = Column(String)
+    max_score = Column(Float, default=0)
 
-    scan_analysis_vulnerability = relationship('ScanAnalysisVulnerability')
-    plugin = relationship('Plugin')
     scan = relationship('Scan', lazy='subquery')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'scan_id': self.scan_id,
+            'library': self.library,
+            'version': self.version,
+            'max_score': self.max_score
+        }
