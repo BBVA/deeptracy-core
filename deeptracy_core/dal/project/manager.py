@@ -74,6 +74,11 @@ def add_project(
         assert 'webhook_url' in hook_data
         hooks['hook_data'] = json.dumps(hook_data)
 
+    if hook_type == ProjectHookType.EMAIL.name:
+        assert type(hook_data) is dict
+        assert 'email' in hook_data
+        hooks['hook_data'] = json.dumps(hook_data)
+
     # build the project object to persist in session
     project = Project(
         repo=repo,
