@@ -101,4 +101,17 @@ def get_scan_deps(scan_id: str, session: Session) -> ScanDep:
     return session.query(ScanDep).filter(ScanDep.scan_id == scan_id).all()
 
 
-__all__ = ('add_scan_dep', 'add_scan_deps', 'compare_scan_deps', 'get_scan_deps')
+def get_scan_by_raw_dep(raw_dep: str, session: Session) -> ScanDep:
+    """
+    Given a raw dependencies, return the dependencies with this raw_dep
+
+    :param raw_dep: (str) raw_dep to check
+    :param session: (Session) database session to add objects
+
+    :rtype: ScanDep
+    :raises ValueError: On invalid project_id or in not found Project
+    """
+    return session.query(ScanDep).filter(ScanDep.raw_dep == raw_dep).all()
+
+
+__all__ = ('add_scan_dep', 'add_scan_deps', 'compare_scan_deps', 'get_scan_deps', 'get_scan_by_raw_dep')
