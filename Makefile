@@ -45,4 +45,4 @@ lint: ## check style with flake8
 
 .PHONY: coverage
 coverage: ## install package
-	py.test --cov=deeptracy_core tests --cov-fail-under 70
+	py.test --cov=deeptracy_core tests --cov-fail-under 65

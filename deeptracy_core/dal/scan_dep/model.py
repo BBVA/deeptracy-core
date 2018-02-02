@@ -23,19 +23,25 @@ TABLE_ID = Sequence('table_id_seq', start=1)
 
 class ScanDep(Base):
     """SQLAlchemy ScanDep model"""
-    __tablename__ = 'scan_deps'
+    __tablename__ = 'scan_dep'
 
     id = Column(String, TABLE_ID, primary_key=True, server_default=TABLE_ID.next_value())
     scan_id = Column(String, ForeignKey('scan.id'))
+    library = Column(String, nullable=False)
+    version = Column(String, nullable=False)
     raw_dep = Column(String, nullable=False)
     found_at = Column(DateTime, nullable=False)
 
     scan = relationship('Scan', lazy='subquery')
+    scan_vul = relationship('ScanVulnerability')
+    vulnerabilities_in_scans = relationship('VulnerabilitiesInScans')
 
     def to_dict(self):
         scan_dep = {
             'id': self.id,
             'scan_id': self.scan_id,
+            'library': self.library,
+            'version': self.version,
             'raw_dep': self.raw_dep,
             'found_at': self.found_at
         }

@@ -28,6 +28,8 @@ class TestStartScan(BaseDeeptracyTest):
         assert 'project' in Base.metadata.tables.keys()
         assert 'scan' in Base.metadata.tables.keys()
         assert 'scan_vulnerability' in Base.metadata.tables.keys()
+        assert 'vulnerability' in Base.metadata.tables.keys()
+        assert 'vulnerabilities_in_scans' in Base.metadata.tables.keys()
 
     @mock.patch('deeptracy_core.dal.database.Base')
     @mock.patch('deeptracy_core.dal.database.database_exists', return_value=False)
