@@ -47,4 +47,4 @@ from .project.model import Project
 from .scan.model import Scan
 from .scan_dep.model import ScanDep
 from .scan_vul.model import ScanVulnerability
-from .models import Vulnerability
+from .vulnerability.models import Vulnerability, VulnerabilitiesInScans

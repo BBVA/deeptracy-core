@@ -71,9 +71,9 @@ class TestScanManager(BaseDeeptracyTest):
 
     def test_add_scan_deps_valid(self):
         scan_id = '123'
-        deps = ['raw_dep', 'raw_dep1', 'raw_dep2']
+        deps = ['raw_dep:1', 'raw_dep1:2', 'raw_dep2:3']
         dt = datetime.now()
-        add_scan_deps(scan_id, deps, dt, self.mock_session)
+        add_scan_deps(scan_id, [dep.split(':') for dep in deps], dt, self.mock_session)
 
         assert self.mock_session.add_all.called
         kall = self.mock_session.add_all.call_args
