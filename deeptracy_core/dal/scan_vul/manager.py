@@ -19,50 +19,42 @@ import logging
 from sqlalchemy.orm import Session
 
 from deeptracy_core.dal.scan_vul.model import ScanVulnerability
-from deeptracy_core.dal.models import Vulnerability
+from deeptracy_core.dal.vulnerability.manager import get_or_create_vuln, get_or_create_vuln_in_scan
 
 log = logging.getLogger(__name__)
 
 
-def add_scan_vul(scan_id: str, library: str, version: str, vulnerabilities: list, session: Session) \
+def add_scan_vuln(scan_dep_id: str, scan_id: str, lang: str, cpe: str, cves: list, session: Session) \
         -> ScanVulnerability:
     """
     Add new dep to a scan
 
-    :param scan_id: (str) scan id to associate the vulnerability
-    :param library: (str) package name
-    :param version: (str) package version
-    :param vulnerabilities: (list) Vulnerabilities list for the current scan
+    :param scan_dep_id: (str) scan dependency id to associate the vulnerability scan
+    :param scan_id: (str) scan id to associate the vulnerability scan
+    :param lang: (str) Language of the scan
+    :param cpe: (str) CPE that describe the vulnerability scan
+    :param cves: (list) cves list for the current cpe
     :param session: (Session) database session to add objects
     :return:
     """
+    assert type(scan_dep_id) is str
     assert type(scan_id) is str
-    assert type(library) is str
-    assert type(version) is str
-    assert type(vulnerabilities) is list
+    assert type(lang) is str
+    assert type(cpe) is str
+    assert type(cves) is list
 
-    max_score = [0]
+    max_score = max([cve['score'] for cve in cves])
 
-    scan_vul = ScanVulnerability(scan_id=scan_id, library=library, version=version)
+    vulnerabilities = [get_or_create_vuln(cpe, cve['cve'], session) for cve in cves]
+
+    scan_vul = ScanVulnerability(scan_id=scan_id, lang=lang, cpe=cpe, max_score=max_score, scan_dep_id=scan_dep_id)
     session.add(scan_vul)
     session.commit()
 
-    def add_vulnerability(vulnerability):
+    [
+        get_or_create_vuln_in_scan(vulnerability_id=vulnerability.id, scan_dep_id=scan_dep_id, session=session)
+        for vulnerability
+        in vulnerabilities
+    ]
 
-        [cpe, cve, patton_id, ref_type, href, prod_title, score, access_vector, source] = vulnerability
-
-        if score > max_score[0]:
-            max_score[0] = score
-
-        new_vulnerability = Vulnerability(scan_vulnerability_id=scan_vul.id, cpe=cpe, cve=cve,
-                                          patton_id=patton_id, ref_type=ref_type, href=href,
-                                          prod_title=prod_title, score=score, access_vector=access_vector,
-                                          source=source)
-        return new_vulnerability
-
-    created_vulnerabilities = [add_vulnerability(vulnerability) for vulnerability in vulnerabilities]
-    session.add_all(created_vulnerabilities)
-    scan_vul.max_score = max_score[0]
-    session.add(scan_vul)
-    session.commit()
     return scan_vul
